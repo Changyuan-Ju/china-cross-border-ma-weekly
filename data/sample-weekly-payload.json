@@ -1,0 +1,144 @@
+{
+  "issue_start_date": "2026-06-27",
+  "issue_end_date": "2026-07-03",
+  "run_started_at": "2026-07-03T14:00:00.000Z",
+  "run_completed_at": "2026-07-03T14:08:00.000Z",
+  "candidate_count": 3,
+  "included_count": 1,
+  "excluded_count": 1,
+  "review_required_count": 1,
+  "deals": [
+    {
+      "canonical_deal_id": "deal-demo-001",
+      "deal_fingerprint": "demo-cross-border-001",
+      "buyer_name_cn": "Demo China Listco",
+      "buyer_name_en": "Demo China Listco",
+      "buyer_ticker": "000001.SZ",
+      "seller_names": ["Demo Seller Group"],
+      "target_name_cn": "Demo Overseas Energy Asset",
+      "target_name_en": "Demo Overseas Energy Asset",
+      "target_country_or_region": "Singapore",
+      "target_primary_asset_location": "Southeast Asia",
+      "target_industry": "Energy",
+      "target_business": "Overseas energy asset operation",
+      "deal_direction": "Chinese buyer acquiring offshore asset",
+      "transaction_type": "Asset acquisition",
+      "stake_before": 0,
+      "stake_change": 60,
+      "stake_after": 60,
+      "obtains_control": true,
+      "consideration_amount": 120000000,
+      "consideration_currency": "USD",
+      "consideration_text": "USD120 million",
+      "payment_methods": ["Cash"],
+      "announcement_date": "2026-07-01",
+      "agreement_date": "2026-07-01",
+      "announcement_type": "initial",
+      "transaction_stage": "agreement_signed",
+      "current_status": "ongoing",
+      "expected_closing_date": null,
+      "actual_closing_date": null,
+      "approvals_required": ["board approval", "offshore regulatory approval"],
+      "closing_conditions": ["regulatory approval", "closing conditions satisfaction"],
+      "strategic_rationale": ["The company stated that the transaction may help expand its Southeast Asia energy footprint."],
+      "article_title": "Demo China Listco (000001.SZ) proposes to acquire 60% of a Singapore energy asset for USD120 million",
+      "article_body": "Demo China Listco announced that it proposes to acquire a 60% interest in an overseas energy asset in Singapore for USD120 million in cash. The company stated that the transaction may help expand its Southeast Asia energy footprint.",
+      "information_gaps": ["Target latest full financials not disclosed"],
+      "visible_tags": ["Chinese buyer acquiring offshore asset", "Asset acquisition", "Cash payment", "Control acquisition"],
+      "importance_score": 78,
+      "importance_score_breakdown": {
+        "size": 18,
+        "control": 20,
+        "classification": 12,
+        "operating_substance": 12,
+        "stage": 10,
+        "completeness": 6
+      },
+      "sources": [
+        {
+          "title": "Demo announcement on offshore asset acquisition",
+          "url": "https://example.com/announcement/demo-001",
+          "publisher": "Demo Exchange",
+          "published_at": "2026-07-01"
+        }
+      ],
+      "evidence": {
+        "consideration": "The announcement states consideration of USD120 million.",
+        "stake": "The announcement states acquisition of a 60% interest."
+      },
+      "validation_status": "valid",
+      "manual_priority": 1
+    },
+    {
+      "canonical_deal_id": "deal-demo-review-001",
+      "deal_fingerprint": "demo-review-required-001",
+      "buyer_name_cn": "Demo Review Company",
+      "buyer_name_en": null,
+      "buyer_ticker": "09999.HK",
+      "seller_names": [],
+      "target_name_cn": "Demo Offshore Holding Platform",
+      "target_name_en": null,
+      "target_country_or_region": "BVI",
+      "target_primary_asset_location": null,
+      "target_industry": null,
+      "target_business": null,
+      "deal_direction": "Review required",
+      "transaction_type": "Equity acquisition",
+      "stake_before": null,
+      "stake_change": null,
+      "stake_after": null,
+      "obtains_control": null,
+      "consideration_amount": null,
+      "consideration_currency": null,
+      "consideration_text": null,
+      "payment_methods": [],
+      "announcement_date": "2026-07-02",
+      "agreement_date": null,
+      "announcement_type": "initial",
+      "transaction_stage": "unknown",
+      "current_status": "review required",
+      "expected_closing_date": null,
+      "actual_closing_date": null,
+      "approvals_required": [],
+      "closing_conditions": [],
+      "strategic_rationale": [],
+      "article_title": "Demo Review Company proposes to acquire an offshore holding platform",
+      "article_body": "The announcement only identifies an offshore holding platform. The principal asset location and cross-border nature have not been verified.",
+      "information_gaps": ["Principal asset location not verified", "Ultimate controller not verified"],
+      "visible_tags": ["Review required", "Offshore platform"],
+      "importance_score": 20,
+      "importance_score_breakdown": {
+        "size": 0,
+        "control": 0,
+        "classification": 0,
+        "operating_substance": 0,
+        "stage": 5,
+        "completeness": 15
+      },
+      "sources": [
+        {
+          "title": "Demo possible acquisition announcement",
+          "url": "https://example.com/announcement/demo-review-001",
+          "publisher": "Demo Exchange",
+          "published_at": "2026-07-02"
+        }
+      ],
+      "evidence": {
+        "target": "The announcement identifies the target as an offshore holding platform."
+      },
+      "validation_status": "review_required",
+      "manual_priority": null
+    }
+  ],
+  "excluded_items": [
+    {
+      "candidate_name": "Demo domestic reorganization",
+      "announcement_date": "2026-07-03",
+      "announcement_title": "Announcement on intragroup asset transfer",
+      "source": "https://example.com/announcement/excluded-001",
+      "exclusion_reason": "Domestic intragroup reorganization",
+      "may_reconsider": false
+    }
+  ],
+  "errors": []
+}

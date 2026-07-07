@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Deal {
+  id                 String      @id
+  fingerprint        String      @unique
+  buyerNameCn        String
+  buyerNameEn        String?
+  buyerTicker        String?
+  sellerNames        String[]
+  targetNameCn       String
+  targetNameEn       String?
+  targetCountry      String?
+  targetAssetLocation String?
+  targetIndustry     String?
+  targetBusiness     String?
+  dealDirection      String
+  transactionType    String
+  stakeBefore        Float?
+  stakeChange        Float?
+  stakeAfter         Float?
+  obtainsControl     Boolean?
+  considerationAmount Float?
+  considerationCurrency String?
+  considerationText  String?
+  paymentMethods     String[]
+  currentStage       String
+  currentStatus      String
+  articleTitle       String
+  articleBody        String
+  informationGaps    String[]
+  visibleTags        String[]
+  importanceScore    Int
+  importanceBreakdown Json
+  validationStatus   String
+  manualPriority     Int?
+  firstAnnouncementDate DateTime
+  latestAnnouncementDate DateTime
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  events             DealEvent[]
+  sources            DealSource[]
+  reviewItems        ReviewItem[]
+}
+
+model DealEvent {
+  id                String   @id
+  dealId            String
+  announcementDate  DateTime
+  announcementType  String
+  transactionStage  String
+  title             String
+  body              String
+  sourceData        Json
+  evidence          Json
+  sourceFingerprint String   @unique
+  createdAt         DateTime @default(now())
+  deal              Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  sourceLinks       DealSource[]
+}
+
+model DealSource {
+  id                String     @id
+  dealId            String
+  eventId           String?
+  title             String
+  url               String
+  publisher         String?
+  publishedAt       DateTime?
+  sourceFingerprint String     @unique
+  createdAt         DateTime   @default(now())
+  deal              Deal       @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  event             DealEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+}
+
+model WeeklyIssue {
+  id             String   @id
+  startDate      DateTime
+  endDate        DateTime
+  title          String
+  summary        String
+  dealIds        String[]
+  candidateCount Int
+  includedCount  Int
+  excludedCount  Int
+  reviewRequiredCount Int
+  publishedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model IngestionRun {
+  id                  String   @id
+  issueId             String?
+  runStartedAt        DateTime
+  runCompletedAt      DateTime?
+  fromDate            DateTime
+  toDate              DateTime
+  candidateCount      Int
+  includedCount       Int
+  excludedCount       Int
+  reviewRequiredCount Int
+  status              String
+  payload             Json
+  excludedItems       Json
+  errors              Json
+  createdAt           DateTime @default(now())
+  excludedCandidates  ExcludedCandidate[]
+  reviewItems         ReviewItem[]
+}
+
+model ExcludedCandidate {
+  id                String       @id
+  runId             String
+  candidateName     String
+  announcementDate  DateTime?
+  announcementTitle String
+  source            String?
+  exclusionReason   String
+  mayReconsider     Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  run               IngestionRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+}
+
+model ReviewItem {
+  id             String       @id
+  runId          String?
+  dealId         String?
+  reason         String
+  payload        Json
+  status         String       @default("open")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  run            IngestionRun? @relation(fields: [runId], references: [id], onDelete: SetNull)
+  deal           Deal?        @relation(fields: [dealId], references: [id], onDelete: SetNull)
+}

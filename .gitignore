@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+.env
+.env.local
+.env.*
+!.env.example
+env
+coverage
+playwright-report
+test-results
+*.log
+data/raw
+data/store.json
+data/test-store.json
+*.tsbuildinfo

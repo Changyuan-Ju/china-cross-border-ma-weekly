@@ -1,0 +1,65 @@
+import { Suspense } from "react";
+import { DealCard } from "@/components/DealCard";
+import { Filters } from "@/components/Filters";
+import { rankDeals } from "@/lib/ranking";
+import { readStore } from "@/lib/store";
+
+export default async function DealsPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+  const params = await searchParams;
+  const store = await readStore();
+  const countries = unique(store.deals.map((deal) => deal.target_country_or_region));
+  const industries = unique(store.deals.map((deal) => deal.target_industry));
+  const stages = unique(store.deals.map((deal) => deal.transaction_stage));
+  const q = params.q?.toLowerCase();
+  const page = Math.max(1, Number(params.page ?? "1"));
+  const pageSize = 10;
+  const filteredDeals = rankDeals(
+    store.deals.filter((deal) => {
+      const haystack = [deal.buyer_name_cn, deal.buyer_ticker, deal.target_name_cn, deal.article_title, deal.article_body].filter(Boolean).join(" ").toLowerCase();
+      return (
+        (!q || haystack.includes(q)) &&
+        (!params.country || deal.target_country_or_region === params.country) &&
+        (!params.industry || deal.target_industry === params.industry) &&
+        (!params.stage || deal.transaction_stage === params.stage)
+      );
+    })
+  );
+  const deals = filteredDeals.slice((page - 1) * pageSize, page * pageSize);
+  const totalPages = Math.max(1, Math.ceil(filteredDeals.length / pageSize));
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mb-6">
+        <h1 className="text-3xl font-semibold text-ink">交易数据库</h1>
+        <p className="mt-2 text-sm text-muted">支持按公司、证券代码、标的、国家/地区、行业和交易阶段检索。</p>
+      </div>
+      <Suspense>
+        <Filters countries={countries} industries={industries} stages={stages} />
+      </Suspense>
+      <div className="mt-6 grid gap-4">
+        {deals.length ? deals.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} />) : <div className="border border-line bg-white p-6 text-sm text-muted">没有符合条件的交易。</div>}
+      </div>
+      <div className="mt-6 flex items-center justify-between text-sm text-muted">
+        <span>第 {page} / {totalPages} 页，共 {filteredDeals.length} 笔</span>
+        <div className="flex gap-2">
+          <PageLink disabled={page <= 1} page={page - 1} params={params}>上一页</PageLink>
+          <PageLink disabled={page >= totalPages} page={page + 1} params={params}>下一页</PageLink>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function unique(values: Array<string | null | undefined>) {
+  return Array.from(new Set(values.filter(Boolean) as string[])).sort((a, b) => a.localeCompare(b, "zh-CN"));
+}
+
+function PageLink({ children, disabled, page, params }: { children: React.ReactNode; disabled: boolean; page: number; params: Record<string, string | undefined> }) {
+  const next = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value && key !== "page") next.set(key, value);
+  });
+  next.set("page", String(page));
+  if (disabled) return <span className="border border-line bg-paper px-3 py-2 text-muted">{children}</span>;
+  return <a className="focus-ring border border-line bg-white px-3 py-2 text-ink hover:border-blue hover:text-blue" href={`/deals?${next.toString()}`}>{children}</a>;
+}

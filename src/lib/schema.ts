@@ -1,0 +1,76 @@
+import { z } from "zod";
+
+const sourceSchema = z.object({
+  title: z.string().min(1),
+  url: z.string().url(),
+  publisher: z.string().optional(),
+  published_at: z.string().optional()
+});
+
+const dealSchema = z.object({
+  canonical_deal_id: z.string().min(1),
+  deal_fingerprint: z.string().min(1),
+  buyer_name_cn: z.string().min(1),
+  buyer_name_en: z.string().nullable().optional(),
+  buyer_ticker: z.string().nullable().optional(),
+  seller_names: z.array(z.string()).default([]),
+  target_name_cn: z.string().min(1),
+  target_name_en: z.string().nullable().optional(),
+  target_country_or_region: z.string().nullable().optional(),
+  target_primary_asset_location: z.string().nullable().optional(),
+  target_industry: z.string().nullable().optional(),
+  target_business: z.string().nullable().optional(),
+  deal_direction: z.string().min(1),
+  transaction_type: z.string().min(1),
+  stake_before: z.number().min(0).max(100).nullable().optional(),
+  stake_change: z.number().min(0).max(100).nullable().optional(),
+  stake_after: z.number().min(0).max(100).nullable().optional(),
+  obtains_control: z.boolean().nullable().optional(),
+  consideration_amount: z.number().nullable().optional(),
+  consideration_currency: z.string().nullable().optional(),
+  consideration_text: z.string().nullable().optional(),
+  payment_methods: z.array(z.string()).default([]),
+  announcement_date: z.string().min(1),
+  agreement_date: z.string().nullable().optional(),
+  announcement_type: z.string().min(1),
+  transaction_stage: z.string().min(1),
+  current_status: z.string().min(1),
+  expected_closing_date: z.string().nullable().optional(),
+  actual_closing_date: z.string().nullable().optional(),
+  approvals_required: z.array(z.string()).default([]),
+  closing_conditions: z.array(z.string()).default([]),
+  strategic_rationale: z.array(z.string()).default([]),
+  article_title: z.string().min(1),
+  article_body: z.string().min(1),
+  information_gaps: z.array(z.string()).default([]),
+  visible_tags: z.array(z.string()).default([]),
+  importance_score: z.number().int().min(0).max(100),
+  importance_score_breakdown: z.record(z.number()),
+  sources: z.array(sourceSchema).min(1),
+  evidence: z.record(z.string()).default({}),
+  validation_status: z.enum(["valid", "review_required", "rejected"]),
+  manual_priority: z.number().int().nullable().optional()
+});
+
+export const weeklyPayloadSchema = z.object({
+  issue_start_date: z.string().min(1),
+  issue_end_date: z.string().min(1),
+  run_started_at: z.string().min(1),
+  run_completed_at: z.string().min(1),
+  candidate_count: z.number().int().nonnegative(),
+  included_count: z.number().int().nonnegative(),
+  excluded_count: z.number().int().nonnegative(),
+  review_required_count: z.number().int().nonnegative(),
+  deals: z.array(dealSchema),
+  excluded_items: z.array(
+    z.object({
+      candidate_name: z.string().min(1),
+      announcement_date: z.string().optional(),
+      announcement_title: z.string().min(1),
+      source: z.string().optional(),
+      exclusion_reason: z.string().min(1),
+      may_reconsider: z.boolean()
+    })
+  ),
+  errors: z.array(z.string())
+});
