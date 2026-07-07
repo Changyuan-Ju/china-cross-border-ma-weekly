@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/Badge";
+import { SourceLink } from "@/components/SourceLink";
+import { SuggestionButton } from "@/components/SuggestionButton";
 import { fmtDate, fmtMoney, stageLabel } from "@/lib/format";
 import { readStore } from "@/lib/store";
 
@@ -47,15 +48,17 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
         <h2 className="text-xl font-semibold text-ink">公告时间线</h2>
         <div className="mt-4 space-y-4">
           {deal.sources.map((source) => (
-            <div key={source.url} className="border-l-2 border-gold pl-4">
+            <div key={`${source.title}-${source.published_at ?? ""}`} className="border-l-2 border-gold pl-4">
               <div className="font-mono text-sm text-muted">{source.published_at ? fmtDate(source.published_at) : fmtDate(deal.announcement_date)}</div>
-              <a className="mt-1 inline-flex items-center gap-2 font-medium text-blue hover:text-blue2" href={source.url} target="_blank" rel="noreferrer">
-                {source.title} <ExternalLink size={14} />
-              </a>
+              <div className="mt-1 font-medium text-ink">{source.title}</div>
+              <div className="mt-2"><SourceLink source={source} /></div>
             </div>
           ))}
         </div>
       </section>
+      <div className="mt-6 flex justify-end">
+        <SuggestionButton targetType="deal" targetId={deal.canonical_deal_id} />
+      </div>
     </div>
   );
 }

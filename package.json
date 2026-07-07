@@ -12,7 +12,16 @@
     "test:e2e": "playwright test",
     "prisma:generate": "prisma generate",
     "postinstall": "prisma generate",
-    "ingest:weekly": "tsx scripts/ingest-weekly.ts"
+    "ingest:weekly": "tsx scripts/ingest-weekly.ts",
+    "moderation:list": "node scripts/moderation.cjs list",
+    "moderation:show": "node scripts/moderation.cjs show",
+    "moderation:approve": "node scripts/moderation.cjs approve",
+    "moderation:reject": "node scripts/moderation.cjs reject",
+    "submissions:list": "node scripts/submissions.cjs list",
+    "submissions:show": "node scripts/submissions.cjs show",
+    "submissions:approve": "node scripts/submissions.cjs approve",
+    "submissions:reject": "node scripts/submissions.cjs reject",
+    "sources:repair": "node scripts/repair-source-links.cjs"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",

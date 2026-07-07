@@ -157,7 +157,12 @@ async function readDatabaseStore(): Promise<Store> {
         title: source.title,
         url: source.url,
         publisher: source.publisher ?? undefined,
-        published_at: source.publishedAt?.toISOString().slice(0, 10)
+        published_at: source.publishedAt?.toISOString().slice(0, 10),
+        source_type: source.sourceType,
+        is_primary: source.isPrimary,
+        link_status: source.linkStatus as Deal["sources"][number]["link_status"],
+        last_verified_at: source.lastVerifiedAt?.toISOString(),
+        wind_record_id: source.windRecordId ?? undefined
       })),
       evidence: {},
       validation_status: deal.validationStatus as Deal["validation_status"],

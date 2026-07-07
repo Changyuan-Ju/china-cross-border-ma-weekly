@@ -2,9 +2,14 @@ import { z } from "zod";
 
 const sourceSchema = z.object({
   title: z.string().min(1),
-  url: z.string().url(),
+  url: z.string().default(""),
   publisher: z.string().optional(),
-  published_at: z.string().optional()
+  published_at: z.string().optional(),
+  source_type: z.string().optional(),
+  is_primary: z.boolean().optional(),
+  link_status: z.enum(["valid", "broken", "replaced", "inaccessible", "not_publicly_available"]).optional(),
+  last_verified_at: z.string().optional(),
+  wind_record_id: z.string().optional()
 });
 
 const dealSchema = z.object({
@@ -65,9 +70,17 @@ export const weeklyPayloadSchema = z.object({
   excluded_items: z.array(
     z.object({
       candidate_name: z.string().min(1),
+      buyer_name: z.string().optional(),
+      buyer_ticker: z.string().optional(),
+      target_name: z.string().optional(),
       announcement_date: z.string().optional(),
       announcement_title: z.string().min(1),
       source: z.string().optional(),
+      source_url: z.string().optional(),
+      source_title: z.string().optional(),
+      link_status: z.enum(["valid", "broken", "replaced", "inaccessible", "not_publicly_available"]).optional(),
+      information_gaps: z.array(z.string()).optional(),
+      wind_record_id: z.string().optional(),
       exclusion_reason: z.string().min(1),
       may_reconsider: z.boolean()
     })

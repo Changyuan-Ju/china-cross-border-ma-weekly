@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
+import { CandidateSection } from "@/components/CandidateSection";
 import { DealCard } from "@/components/DealCard";
 import { fmtIssueRange } from "@/lib/format";
 import { rankDeals, topDeals } from "@/lib/ranking";
 import { readStore } from "@/lib/store";
+import { getIssueCandidates } from "@/lib/candidates";
 
 export default async function WeeklyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,6 +14,7 @@ export default async function WeeklyPage({ params }: { params: Promise<{ id: str
   const deals = store.deals.filter((deal) => issue.deal_ids.includes(deal.canonical_deal_id));
   const featured = topDeals(deals);
   const rest = rankDeals(deals);
+  const candidates = await getIssueCandidates(id);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
@@ -27,6 +30,7 @@ export default async function WeeklyPage({ params }: { params: Promise<{ id: str
       <div className="mt-4 grid gap-4">{featured.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} featured />)}</div>
       <h2 className="mt-8 text-2xl font-semibold text-ink">全部交易</h2>
       <div className="mt-4 grid gap-4">{rest.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} />)}</div>
+      <CandidateSection candidates={candidates} />
     </div>
   );
 }

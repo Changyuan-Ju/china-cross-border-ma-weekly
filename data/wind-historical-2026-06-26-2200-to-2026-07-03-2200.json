@@ -1,0 +1,331 @@
+{
+  "issue_start_date": "2026-06-26",
+  "issue_end_date": "2026-07-03",
+  "run_started_at": "2026-07-07T14:05:00.000Z",
+  "run_completed_at": "2026-07-07T14:15:00.000Z",
+  "candidate_count": 13,
+  "included_count": 4,
+  "excluded_count": 9,
+  "review_required_count": 0,
+  "deals": [
+    {
+      "canonical_deal_id": "deal-linkutec-northstar-20260703",
+      "deal_fingerprint": "linkutec-301369-northstar-technologies-limited-outbound-20260703",
+      "buyer_name_cn": "联动科技",
+      "buyer_name_en": null,
+      "buyer_ticker": "301369.SZ",
+      "seller_names": ["Renaissance Maverick Corp."],
+      "target_name_cn": "Northstar Technologies Limited",
+      "target_name_en": "Northstar Technologies Limited",
+      "target_country_or_region": "境外",
+      "target_primary_asset_location": null,
+      "target_industry": "未披露",
+      "target_business": "未披露",
+      "deal_direction": "中资收购境外资产",
+      "transaction_type": "股权收购",
+      "stake_before": 0,
+      "stake_change": 100,
+      "stake_after": 100,
+      "obtains_control": true,
+      "consideration_amount": 10000000,
+      "consideration_currency": "USD",
+      "consideration_text": "1,000万美元",
+      "payment_methods": ["现金"],
+      "announcement_date": "2026-07-03",
+      "agreement_date": "2026-07-03",
+      "announcement_type": "initial",
+      "transaction_stage": "agreement_signed",
+      "current_status": "进行中",
+      "expected_closing_date": null,
+      "actual_closing_date": null,
+      "approvals_required": [],
+      "closing_conditions": [],
+      "strategic_rationale": [],
+      "article_title": "联动科技（301369.SZ）拟以1,000万美元收购Northstar Technologies Limited 100%股权",
+      "article_body": "联动科技公告称，公司全资子公司香港联动拟以现金方式向Renaissance Maverick Corp.收购Northstar Technologies Limited 100%股权，交易对价为1,000万美元。公司、香港联动与交易对方已于2026年7月3日签署股份购买协议。本次交易不构成关联交易，也不构成重大资产重组。",
+      "information_gaps": ["Wind返回内容未披露标的主要资产所在地和主营业务", "公开直达公告链接未取得"],
+      "visible_tags": ["已签署协议", "境外", "未披露行业", "现金支付", "100%股权"],
+      "importance_score": 78,
+      "importance_score_breakdown": {
+        "size": 10,
+        "control": 25,
+        "classification": 10,
+        "operating_substance": 8,
+        "stage": 15,
+        "completeness": 10
+      },
+      "sources": [
+        {
+          "title": "联动科技:关于收购Northstar Technologies Limited 100%股权的公告",
+          "url": "https://www.cninfo.com.cn/new/fulltextSearch?keyWord=联动科技%20Northstar%20Technologies%20Limited",
+          "publisher": "Wind公告库；巨潮资讯检索入口",
+          "published_at": "2026-07-03"
+        }
+      ],
+      "evidence": {
+        "transaction": "Wind公告库返回：香港联动以现金方式收购Northstar Technologies Limited 100%股权，交易对价为1,000万美元。",
+        "approval": "Wind公告库返回：公司第三届董事会第八次会议审议通过相关议案。"
+      },
+      "validation_status": "valid",
+      "manual_priority": null
+    },
+    {
+      "canonical_deal_id": "deal-xingye-yinxi-atlas-tin-20260701",
+      "deal_fingerprint": "xingye-yinxi-000426-atlas-tin-sas-outbound-20260701",
+      "buyer_name_cn": "兴业银锡",
+      "buyer_name_en": null,
+      "buyer_ticker": "000426.SZ",
+      "seller_names": ["丰田通商株式会社", "日铁矿业株式会社"],
+      "target_name_cn": "Atlas Tin SAS",
+      "target_name_en": "Atlas Tin SAS",
+      "target_country_or_region": "境外",
+      "target_primary_asset_location": null,
+      "target_industry": "矿业",
+      "target_business": "未披露",
+      "deal_direction": "中资收购境外资产",
+      "transaction_type": "股权收购",
+      "stake_before": null,
+      "stake_change": 25,
+      "stake_after": null,
+      "obtains_control": null,
+      "consideration_amount": null,
+      "consideration_currency": null,
+      "consideration_text": null,
+      "payment_methods": [],
+      "announcement_date": "2026-07-01",
+      "agreement_date": "2026-06-30",
+      "announcement_type": "initial",
+      "transaction_stage": "board_approved",
+      "current_status": "进行中",
+      "expected_closing_date": null,
+      "actual_closing_date": null,
+      "approvals_required": [],
+      "closing_conditions": [],
+      "strategic_rationale": [],
+      "article_title": "兴业银锡（000426.SZ）拟收购Atlas Tin SAS 25%股权",
+      "article_body": "兴业银锡公告称，公司第十届董事会第三十六次会议审议通过收购Atlas Tin SAS 25%股权议案，拟通过海外新设子公司收购丰田通商株式会社和日铁矿业株式会社合计持有的目标公司1,060,175股股份，即剩余25%股权。本次交易不构成关联交易，不构成重大资产重组，亦无需公司股东会审议。",
+      "information_gaps": ["Wind返回内容未披露交易对价", "公开直达公告链接未取得"],
+      "visible_tags": ["董事会批准", "境外", "矿业", "25%股权"],
+      "importance_score": 58,
+      "importance_score_breakdown": {
+        "size": 0,
+        "control": 8,
+        "classification": 10,
+        "operating_substance": 15,
+        "stage": 15,
+        "completeness": 10
+      },
+      "sources": [
+        {
+          "title": "兴业银锡:关于收购 Atlas Tin SAS 25%股权的公告",
+          "url": "https://www.cninfo.com.cn/new/fulltextSearch?keyWord=兴业银锡%20Atlas%20Tin%20SAS%2025%25股权",
+          "publisher": "Wind公告库；巨潮资讯检索入口",
+          "published_at": "2026-07-01"
+        }
+      ],
+      "evidence": {
+        "transaction": "Wind公告库返回：公司拟通过海外新设子公司收购丰田通商株式会社和日铁矿业株式会社合计持有的目标公司1,060,175股股份，剩余25%股权。",
+        "approval": "Wind公告库返回：2026年6月30日第十届董事会第三十六次会议审议通过。"
+      },
+      "validation_status": "valid",
+      "manual_priority": null
+    },
+    {
+      "canonical_deal_id": "deal-haoyang-follow-me-20260701",
+      "deal_fingerprint": "haoyang-300833-follow-me-holding-bv-outbound-20260701",
+      "buyer_name_cn": "浩洋股份",
+      "buyer_name_en": null,
+      "buyer_ticker": "300833.SZ",
+      "seller_names": ["Keylight Holding B.V.", "Wel Ventures B.V.", "Erik Berends Beheer B.V."],
+      "target_name_cn": "Follow-Me Holding B.V.",
+      "target_name_en": "Follow-Me Holding B.V.",
+      "target_country_or_region": "荷兰",
+      "target_primary_asset_location": "荷兰",
+      "target_industry": "舞台灯光控制软件及相关技术",
+      "target_business": "未披露",
+      "deal_direction": "中资收购境外资产",
+      "transaction_type": "股权收购",
+      "stake_before": 0,
+      "stake_change": 66.67,
+      "stake_after": 66.67,
+      "obtains_control": true,
+      "consideration_amount": 2668550,
+      "consideration_currency": "EUR",
+      "consideration_text": "266.855万欧元",
+      "payment_methods": ["现金"],
+      "announcement_date": "2026-07-01",
+      "agreement_date": "2026-06-30",
+      "announcement_type": "initial",
+      "transaction_stage": "agreement_signed",
+      "current_status": "进行中",
+      "expected_closing_date": null,
+      "actual_closing_date": null,
+      "approvals_required": [],
+      "closing_conditions": [],
+      "strategic_rationale": [],
+      "article_title": "浩洋股份（300833.SZ）拟以266.855万欧元收购荷兰Follow-Me Holding B.V. 66.67%股权",
+      "article_body": "浩洋股份公告称，全资子公司浩洋（香港）投资控股有限公司与Follow-Me Holding B.V.股东签署股权收购协议，拟以现金方式收购Follow-Me合计66.67%的股权，交易对价合计为266.855万欧元。本次交易完成后，标的公司将纳入公司合并报表范围。本次交易不构成重大资产重组、重组上市或关联交易，无需提交股东会审议。",
+      "information_gaps": ["Wind返回内容未披露标的完整财务数据", "公开直达公告链接未取得"],
+      "visible_tags": ["已签署协议", "荷兰", "技术服务", "现金支付", "取得控制权"],
+      "importance_score": 74,
+      "importance_score_breakdown": {
+        "size": 8,
+        "control": 22,
+        "classification": 10,
+        "operating_substance": 14,
+        "stage": 15,
+        "completeness": 5
+      },
+      "sources": [
+        {
+          "title": "浩洋股份:关于全资子公司收购股权的公告",
+          "url": "https://www.cninfo.com.cn/new/fulltextSearch?keyWord=浩洋股份%20Follow-Me%20Holding%20B.V.",
+          "publisher": "Wind公告库；巨潮资讯检索入口",
+          "published_at": "2026-07-01"
+        }
+      ],
+      "evidence": {
+        "transaction": "Wind公告库返回：浩洋（香港）投资控股有限公司拟以现金方式收购Follow-Me合计66.67%的股权，交易对价为2,668,550欧元。",
+        "control": "Wind公告库返回：本次交易完成后，标的公司将纳入公司合并报表范围。"
+      },
+      "validation_status": "valid",
+      "manual_priority": null
+    },
+    {
+      "canonical_deal_id": "deal-oriental-yuhong-world-hardware-20260702",
+      "deal_fingerprint": "oriental-yuhong-002271-world-hardware-completion-20260702",
+      "buyer_name_cn": "东方雨虹",
+      "buyer_name_en": null,
+      "buyer_ticker": "002271.SZ",
+      "seller_names": [],
+      "target_name_cn": "世界五金塑胶厂有限公司",
+      "target_name_en": null,
+      "target_country_or_region": "境外",
+      "target_primary_asset_location": null,
+      "target_industry": "五金塑胶",
+      "target_business": "未披露",
+      "deal_direction": "中资收购境外资产",
+      "transaction_type": "股权收购",
+      "stake_before": null,
+      "stake_change": 100,
+      "stake_after": 100,
+      "obtains_control": true,
+      "consideration_amount": null,
+      "consideration_currency": null,
+      "consideration_text": null,
+      "payment_methods": [],
+      "announcement_date": "2026-07-02",
+      "agreement_date": "2026-03-18",
+      "announcement_type": "update",
+      "transaction_stage": "completed",
+      "current_status": "已完成交割",
+      "expected_closing_date": null,
+      "actual_closing_date": "2026-07-02",
+      "approvals_required": [],
+      "closing_conditions": [],
+      "strategic_rationale": [],
+      "article_title": "东方雨虹（002271.SZ）收购世界五金塑胶厂有限公司100%股权完成交割",
+      "article_body": "东方雨虹公告称，公司此前审议通过收购世界五金塑胶厂有限公司100%股权事项，并已披露签署股份购买协议及相关董事会决议。本期公告为该交易进展暨交割完成公告，显示该项跨境股权收购已完成交割。",
+      "information_gaps": ["Wind返回内容未披露本次公告中的完整交易对价", "公开直达公告链接未取得"],
+      "visible_tags": ["完成交割", "境外", "五金塑胶", "100%股权"],
+      "importance_score": 80,
+      "importance_score_breakdown": {
+        "size": 0,
+        "control": 25,
+        "classification": 10,
+        "operating_substance": 15,
+        "stage": 25,
+        "completeness": 5
+      },
+      "sources": [
+        {
+          "title": "东方雨虹:关于收购世界五金塑胶厂有限公司100%股权进展暨交割完成的公告",
+          "url": "https://www.cninfo.com.cn/new/fulltextSearch?keyWord=东方雨虹%20世界五金塑胶厂有限公司%20100%25股权%20交割完成",
+          "publisher": "Wind公告库；巨潮资讯检索入口",
+          "published_at": "2026-07-02"
+        }
+      ],
+      "evidence": {
+        "completed": "Wind公告库返回：公告标题为关于收购世界五金塑胶厂有限公司100%股权进展暨交割完成的公告。",
+        "history": "Wind公告库返回：公司于2026年4月9日审议通过收购100%股权议案，并引用2026年3月18日股份购买协议公告。"
+      },
+      "validation_status": "valid",
+      "manual_priority": null
+    }
+  ],
+  "excluded_items": [
+    {
+      "candidate_name": "米兔网络收购报告书",
+      "announcement_date": "2026-07-01",
+      "announcement_title": "2026-033米兔网络收购报告书",
+      "source": "Wind公告库",
+      "exclusion_reason": "非跨境交易",
+      "may_reconsider": false
+    },
+    {
+      "candidate_name": "阳竹科技收购报告书",
+      "announcement_date": "2026-06-30",
+      "announcement_title": "收购报告书(修订稿)",
+      "source": "Wind公告库",
+      "exclusion_reason": "无法确认跨境属性且更像境内公众公司收购",
+      "may_reconsider": true
+    },
+    {
+      "candidate_name": "传化智联收购控股子公司少数股东权益",
+      "announcement_date": "2026-06-27",
+      "announcement_title": "传化智联:关于收购控股子公司少数股东权益暨关联交易的公告",
+      "source": "Wind公告库",
+      "exclusion_reason": "境内控股子公司少数股权收购",
+      "may_reconsider": false
+    },
+    {
+      "candidate_name": "福特科收购报告书",
+      "announcement_date": "2026-06-30",
+      "announcement_title": "福特科:收购报告书(修订稿)",
+      "source": "Wind公告库",
+      "exclusion_reason": "非跨境交易",
+      "may_reconsider": false
+    },
+    {
+      "candidate_name": "华联控股收购控股子公司少数股权",
+      "announcement_date": "2026-06-27",
+      "announcement_title": "华联控股:华联控股关于拟现金收购控股子公司少数股权的公告",
+      "source": "Wind公告库",
+      "exclusion_reason": "控股子公司少数股权收购，跨境属性不足",
+      "may_reconsider": true
+    },
+    {
+      "candidate_name": "今天国际控制权变更进展",
+      "announcement_date": "2026-06-30",
+      "announcement_title": "今天国际:关于控股股东签署股份转让协议构成管理层收购暨控制权拟变更的进展公告",
+      "source": "Wind公告库",
+      "exclusion_reason": "境内上市公司控制权变更进展",
+      "may_reconsider": false
+    },
+    {
+      "candidate_name": "通策医疗收购股权进展",
+      "announcement_date": "2026-06-27",
+      "announcement_title": "通策医疗:关于收购股权暨关联交易的进展公告",
+      "source": "Wind公告库",
+      "exclusion_reason": "境内股权收购进展",
+      "may_reconsider": false
+    },
+    {
+      "candidate_name": "赛微微电支付股权收购款",
+      "announcement_date": "2026-06-27",
+      "announcement_title": "赛微微电:关于使用部分超募资金支付部分股权收购款的公告",
+      "source": "Wind公告库",
+      "exclusion_reason": "支付安排公告，未构成独立跨境并购交易披露",
+      "may_reconsider": false
+    },
+    {
+      "candidate_name": "皖维高新收购报告书摘要",
+      "announcement_date": "2026-07-03",
+      "announcement_title": "皖维高新:收购报告书摘要(修订稿)",
+      "source": "Wind公告库",
+      "exclusion_reason": "境内控制权或收购报告书披露，未确认跨境属性",
+      "may_reconsider": true
+    }
+  ],
+  "errors": []
+}

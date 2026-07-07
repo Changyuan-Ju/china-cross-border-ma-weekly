@@ -39,9 +39,17 @@ export async function upsertWeeklyPayloadToDatabase(payload: WeeklyPayload) {
         id: randomUUID(),
         runId,
         candidateName: item.candidate_name,
+        buyerName: item.buyer_name,
+        buyerTicker: item.buyer_ticker,
+        targetName: item.target_name,
         announcementDate: item.announcement_date ? new Date(item.announcement_date) : null,
         announcementTitle: item.announcement_title,
         source: item.source,
+        sourceUrl: item.source_url,
+        sourceTitle: item.source_title,
+        linkStatus: item.link_status ?? "not_publicly_available",
+        informationGaps: item.information_gaps ?? [],
+        windRecordId: item.wind_record_id,
         exclusionReason: item.exclusion_reason,
         mayReconsider: item.may_reconsider
       }
@@ -141,7 +149,16 @@ async function upsertEventAndSources(deal: Deal) {
     const sourceFingerprint = makeSourceFingerprint(item.url, item.title, item.published_at);
     await prisma.dealSource.upsert({
       where: { sourceFingerprint },
-      update: { title: item.title, url: item.url },
+      update: {
+        title: item.title,
+        url: item.url,
+        publisher: item.publisher,
+        sourceType: item.source_type ?? "wind_record",
+        isPrimary: item.is_primary ?? item === deal.sources[0],
+        linkStatus: item.link_status ?? (item.url ? "valid" : "not_publicly_available"),
+        lastVerifiedAt: item.last_verified_at ? new Date(item.last_verified_at) : null,
+        windRecordId: item.wind_record_id
+      },
       create: {
         id: sourceFingerprint,
         dealId: deal.canonical_deal_id,
@@ -149,6 +166,11 @@ async function upsertEventAndSources(deal: Deal) {
         title: item.title,
         url: item.url,
         publisher: item.publisher,
+        sourceType: item.source_type ?? "wind_record",
+        isPrimary: item.is_primary ?? item === deal.sources[0],
+        linkStatus: item.link_status ?? (item.url ? "valid" : "not_publicly_available"),
+        lastVerifiedAt: item.last_verified_at ? new Date(item.last_verified_at) : null,
+        windRecordId: item.wind_record_id,
         publishedAt: item.published_at ? new Date(item.published_at) : null,
         sourceFingerprint
       }

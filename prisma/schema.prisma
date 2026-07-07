@@ -3,55 +3,58 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model Deal {
-  id                 String      @id
-  fingerprint        String      @unique
-  buyerNameCn        String
-  buyerNameEn        String?
-  buyerTicker        String?
-  sellerNames        String[]
-  targetNameCn       String
-  targetNameEn       String?
-  targetCountry      String?
-  targetAssetLocation String?
-  targetIndustry     String?
-  targetBusiness     String?
-  dealDirection      String
-  transactionType    String
-  stakeBefore        Float?
-  stakeChange        Float?
-  stakeAfter         Float?
-  obtainsControl     Boolean?
-  considerationAmount Float?
-  considerationCurrency String?
-  considerationText  String?
-  paymentMethods     String[]
-  currentStage       String
-  currentStatus      String
-  articleTitle       String
-  articleBody        String
-  informationGaps    String[]
-  visibleTags        String[]
-  importanceScore    Int
-  importanceBreakdown Json
-  validationStatus   String
-  manualPriority     Int?
-  firstAnnouncementDate DateTime
+  id                     String              @id
+  fingerprint            String              @unique
+  buyerNameCn            String
+  buyerNameEn            String?
+  buyerTicker            String?
+  sellerNames            String[]
+  targetNameCn           String
+  targetNameEn           String?
+  targetCountry          String?
+  targetAssetLocation    String?
+  targetIndustry         String?
+  targetBusiness         String?
+  dealDirection          String
+  transactionType        String
+  stakeBefore            Float?
+  stakeChange            Float?
+  stakeAfter             Float?
+  obtainsControl         Boolean?
+  considerationAmount    Float?
+  considerationCurrency  String?
+  considerationText      String?
+  paymentMethods         String[]
+  currentStage           String
+  currentStatus          String
+  articleTitle           String
+  articleBody            String
+  informationGaps        String[]
+  visibleTags            String[]
+  importanceScore        Int
+  importanceBreakdown    Json
+  validationStatus       String
+  manualPriority         Int?
+  firstAnnouncementDate  DateTime
   latestAnnouncementDate DateTime
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
-  events             DealEvent[]
-  sources            DealSource[]
-  reviewItems        ReviewItem[]
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+  events                 DealEvent[]
+  sources                DealSource[]
+  reviewItems            ReviewItem[]
+  moderationRequests     ModerationRequest[]
+  manualSubmissions      ManualSubmission[]
+  statusChangeLogs       StatusChangeLog[]
 }
 
 model DealEvent {
-  id                String   @id
+  id                String       @id
   dealId            String
   announcementDate  DateTime
   announcementType  String
@@ -60,9 +63,9 @@ model DealEvent {
   body              String
   sourceData        Json
   evidence          Json
-  sourceFingerprint String   @unique
-  createdAt         DateTime @default(now())
-  deal              Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  sourceFingerprint String       @unique
+  createdAt         DateTime     @default(now())
+  deal              Deal         @relation(fields: [dealId], references: [id], onDelete: Cascade)
   sourceLinks       DealSource[]
 }
 
@@ -73,6 +76,11 @@ model DealSource {
   title             String
   url               String
   publisher         String?
+  sourceType        String     @default("wind_record")
+  isPrimary         Boolean    @default(false)
+  linkStatus        String     @default("valid")
+  lastVerifiedAt    DateTime?
+  windRecordId      String?
   publishedAt       DateTime?
   sourceFingerprint String     @unique
   createdAt         DateTime   @default(now())
@@ -81,23 +89,23 @@ model DealSource {
 }
 
 model WeeklyIssue {
-  id             String   @id
-  startDate      DateTime
-  endDate        DateTime
-  title          String
-  summary        String
-  dealIds        String[]
-  candidateCount Int
-  includedCount  Int
-  excludedCount  Int
+  id                  String    @id
+  startDate           DateTime
+  endDate             DateTime
+  title               String
+  summary             String
+  dealIds             String[]
+  candidateCount      Int
+  includedCount       Int
+  excludedCount       Int
   reviewRequiredCount Int
-  publishedAt    DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  publishedAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 }
 
 model IngestionRun {
-  id                  String   @id
+  id                  String              @id
   issueId             String?
   runStartedAt        DateTime
   runCompletedAt      DateTime?
@@ -111,33 +119,97 @@ model IngestionRun {
   payload             Json
   excludedItems       Json
   errors              Json
-  createdAt           DateTime @default(now())
+  createdAt           DateTime            @default(now())
   excludedCandidates  ExcludedCandidate[]
   reviewItems         ReviewItem[]
 }
 
 model ExcludedCandidate {
-  id                String       @id
-  runId             String
-  candidateName     String
-  announcementDate  DateTime?
-  announcementTitle String
-  source            String?
-  exclusionReason   String
-  mayReconsider     Boolean      @default(false)
-  createdAt         DateTime     @default(now())
-  run               IngestionRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  id                 String              @id
+  runId              String
+  candidateName      String
+  buyerName          String?
+  buyerTicker        String?
+  targetName         String?
+  announcementDate   DateTime?
+  announcementTitle  String
+  source             String?
+  sourceUrl          String?
+  sourceTitle        String?
+  linkStatus         String              @default("not_publicly_available")
+  informationGaps    String[]            @default([])
+  windRecordId       String?
+  exclusionReason    String
+  mayReconsider      Boolean             @default(false)
+  status             String              @default("excluded")
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  run                IngestionRun        @relation(fields: [runId], references: [id], onDelete: Cascade)
+  moderationRequests ModerationRequest[]
+  statusChangeLogs   StatusChangeLog[]
 }
 
 model ReviewItem {
-  id             String       @id
-  runId          String?
-  dealId         String?
-  reason         String
-  payload        Json
-  status         String       @default("open")
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  run            IngestionRun? @relation(fields: [runId], references: [id], onDelete: SetNull)
-  deal           Deal?        @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  id                 String              @id
+  runId              String?
+  dealId             String?
+  reason             String
+  payload            Json
+  status             String              @default("open")
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  run                IngestionRun?       @relation(fields: [runId], references: [id], onDelete: SetNull)
+  deal               Deal?               @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  moderationRequests ModerationRequest[]
+  statusChangeLogs   StatusChangeLog[]
+}
+
+model ModerationRequest {
+  id                  String             @id
+  targetType          String
+  targetId            String
+  requestedAction     String
+  reason              String
+  status              String             @default("pending")
+  createdAt           DateTime           @default(now())
+  reviewedAt          DateTime?
+  resolutionNote      String?
+  requestHash         String             @unique
+  deal                Deal?              @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  dealId              String?
+  reviewItem          ReviewItem?        @relation(fields: [reviewItemId], references: [id], onDelete: SetNull)
+  reviewItemId        String?
+  excludedCandidate   ExcludedCandidate? @relation(fields: [excludedCandidateId], references: [id], onDelete: SetNull)
+  excludedCandidateId String?
+}
+
+model ManualSubmission {
+  id                String    @id
+  title             String
+  sourceUrl         String?
+  status            String    @default("submitted")
+  createdAt         DateTime  @default(now())
+  reviewedAt        DateTime?
+  reviewNote        String?
+  linkedDealId      String?
+  linkedDealEventId String?
+  submissionHash    String    @unique
+  deal              Deal?     @relation(fields: [linkedDealId], references: [id], onDelete: SetNull)
+}
+
+model StatusChangeLog {
+  id                  String             @id
+  targetType          String
+  targetId            String
+  previousStatus      String
+  nextStatus          String
+  reason              String
+  moderationRequestId String?
+  createdAt           DateTime           @default(now())
+  dealId              String?
+  reviewItemId        String?
+  excludedCandidateId String?
+  deal                Deal?              @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  reviewItem          ReviewItem?        @relation(fields: [reviewItemId], references: [id], onDelete: SetNull)
+  excludedCandidate   ExcludedCandidate? @relation(fields: [excludedCandidateId], references: [id], onDelete: SetNull)
 }

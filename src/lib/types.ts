@@ -5,6 +5,11 @@ export type DealSource = {
   url: string;
   publisher?: string;
   published_at?: string;
+  source_type?: string;
+  is_primary?: boolean;
+  link_status?: "valid" | "broken" | "replaced" | "inaccessible" | "not_publicly_available";
+  last_verified_at?: string;
+  wind_record_id?: string;
 };
 
 export type Deal = {
@@ -54,11 +59,38 @@ export type Deal = {
 
 export type ExcludedItem = {
   candidate_name: string;
+  buyer_name?: string;
+  buyer_ticker?: string;
+  target_name?: string;
   announcement_date?: string;
   announcement_title: string;
   source?: string;
+  source_url?: string;
+  source_title?: string;
+  link_status?: "valid" | "broken" | "replaced" | "inaccessible" | "not_publicly_available";
+  information_gaps?: string[];
+  wind_record_id?: string;
   exclusion_reason: string;
   may_reconsider: boolean;
+};
+
+export type CandidateItem = {
+  id: string;
+  issue_id: string;
+  status: "review_required" | "excluded";
+  candidate_title: string;
+  buyer_name?: string | null;
+  buyer_ticker?: string | null;
+  target_name?: string | null;
+  announcement_date?: string | null;
+  current_status: string;
+  reason: string;
+  information_gaps: string[];
+  original_title: string;
+  source_title?: string | null;
+  source_url?: string | null;
+  source_publisher?: string | null;
+  link_status: string;
 };
 
 export type WeeklyPayload = {

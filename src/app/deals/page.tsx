@@ -1,6 +1,8 @@
 import { Suspense } from "react";
+import { CandidateSection } from "@/components/CandidateSection";
 import { DealCard } from "@/components/DealCard";
 import { Filters } from "@/components/Filters";
+import { getAllCandidates } from "@/lib/candidates";
 import { rankDeals } from "@/lib/ranking";
 import { readStore } from "@/lib/store";
 
@@ -11,8 +13,11 @@ export default async function DealsPage({ searchParams }: { searchParams: Promis
   const industries = unique(store.deals.map((deal) => deal.target_industry));
   const stages = unique(store.deals.map((deal) => deal.transaction_stage));
   const q = params.q?.toLowerCase();
+  const status = params.status ?? "已纳入";
   const page = Math.max(1, Number(params.page ?? "1"));
   const pageSize = 10;
+  const candidates = status === "已纳入" ? [] : await getAllCandidates();
+  const visibleCandidates = candidates.filter((item) => (status === "待复核" ? item.status === "review_required" : item.status === "excluded"));
   const filteredDeals = rankDeals(
     store.deals.filter((deal) => {
       const haystack = [deal.buyer_name_cn, deal.buyer_ticker, deal.target_name_cn, deal.article_title, deal.article_body].filter(Boolean).join(" ").toLowerCase();
@@ -37,15 +42,19 @@ export default async function DealsPage({ searchParams }: { searchParams: Promis
         <Filters countries={countries} industries={industries} stages={stages} />
       </Suspense>
       <div className="mt-6 grid gap-4">
-        {deals.length ? deals.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} />) : <div className="border border-line bg-white p-6 text-sm text-muted">没有符合条件的交易。</div>}
+        {status === "已纳入" ? (
+          deals.length ? deals.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} />) : <div className="border border-line bg-white p-6 text-sm text-muted">没有符合条件的交易。</div>
+        ) : (
+          <CandidateSection candidates={visibleCandidates} />
+        )}
       </div>
-      <div className="mt-6 flex items-center justify-between text-sm text-muted">
+      {status === "已纳入" ? <div className="mt-6 flex items-center justify-between text-sm text-muted">
         <span>第 {page} / {totalPages} 页，共 {filteredDeals.length} 笔</span>
         <div className="flex gap-2">
           <PageLink disabled={page <= 1} page={page - 1} params={params}>上一页</PageLink>
           <PageLink disabled={page >= totalPages} page={page + 1} params={params}>下一页</PageLink>
         </div>
-      </div>
+      </div> : null}
     </div>
   );
 }

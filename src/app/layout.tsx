@@ -11,6 +11,7 @@ const navItems = [
   ["首页", "/"],
   ["交易数据库", "/deals"],
   ["历史周报", "/archive"],
+  ["补充交易", "/submit"],
   ["方法说明", "/methodology"],
   ["运行记录", "/admin/runs"]
 ];

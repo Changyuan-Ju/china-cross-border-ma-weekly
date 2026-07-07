@@ -19,3 +19,11 @@ test("archive and methodology pages load", async ({ page }) => {
   await page.goto("/methodology");
   await expect(page.getByRole("heading", { name: "方法说明" })).toBeVisible();
 });
+
+test("submit page keeps public lead submission simple", async ({ page }) => {
+  await page.goto("/submit");
+  await expect(page.getByRole("heading", { name: "补充交易" })).toBeVisible();
+  await expect(page.getByLabel("标题")).toBeVisible();
+  await expect(page.getByLabel("公告链接")).toBeVisible();
+  await expect(page.getByRole("button", { name: "提交交易线索" })).toBeVisible();
+});

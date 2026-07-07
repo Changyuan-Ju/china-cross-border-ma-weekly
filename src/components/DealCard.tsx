@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
 import type { Deal } from "@/lib/types";
 import { fmtDate, fmtMoney, stageLabel } from "@/lib/format";
 import { Badge } from "./Badge";
+import { SourceLink } from "./SourceLink";
+import { SuggestionButton } from "./SuggestionButton";
 
 export function DealCard({ deal, featured = false }: { deal: Deal; featured?: boolean }) {
   const source = deal.sources[0];
@@ -32,11 +33,8 @@ export function DealCard({ deal, featured = false }: { deal: Deal; featured?: bo
         <Link className="focus-ring border border-blue bg-blue px-4 py-2 text-sm font-semibold text-white hover:bg-blue2 active:bg-ink" href={`/deals/${deal.canonical_deal_id}`}>
           查看交易详情
         </Link>
-        {source ? (
-          <a className="focus-ring inline-flex items-center gap-2 border border-line bg-paper px-4 py-2 text-sm text-ink hover:border-blue hover:text-blue" href={source.url} target="_blank" rel="noreferrer">
-            公告来源 <ExternalLink size={14} />
-          </a>
-        ) : null}
+        <SourceLink source={source} />
+        <SuggestionButton targetType="deal" targetId={deal.canonical_deal_id} />
       </div>
     </article>
   );
