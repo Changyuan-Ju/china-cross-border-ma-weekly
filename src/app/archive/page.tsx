@@ -2,6 +2,8 @@ import Link from "next/link";
 import { fmtIssueRange } from "@/lib/format";
 import { readStore } from "@/lib/store";
 
+export const dynamic = "force-dynamic";
+
 export default async function ArchivePage() {
   const store = await readStore();
   return (

@@ -5,6 +5,8 @@ import { fmtIssueRange } from "@/lib/format";
 import { rankDeals, topDeals } from "@/lib/ranking";
 import { readStore } from "@/lib/store";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const store = await readStore();
   const latest = store.issues[0];
