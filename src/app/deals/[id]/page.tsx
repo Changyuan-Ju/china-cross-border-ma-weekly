@@ -12,52 +12,70 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
   if (!deal) notFound();
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Badge tone="blue">{stageLabel(deal.transaction_stage)}</Badge>
-        <Badge tone={deal.validation_status === "valid" ? "gold" : "red"}>{deal.validation_status}</Badge>
-        {deal.visible_tags.map((tag) => (
+    <div className="shell py-8">
+      <div className="mb-5 flex flex-wrap gap-2">
+        <Badge tone={deal.transaction_stage === "completed" ? "green" : "gold"}>{stageLabel(deal.transaction_stage)}</Badge>
+        <Badge tone={deal.validation_status === "valid" ? "manual" : "red"}>{deal.validation_status}</Badge>
+        {deal.visible_tags.slice(0, 6).map((tag) => (
           <Badge key={tag}>{tag}</Badge>
         ))}
       </div>
-      <h1 className="text-3xl font-semibold leading-tight text-ink">{deal.article_title}</h1>
-      <p className="mt-4 text-base leading-8 text-muted">{deal.article_body}</p>
+      <h1 className="max-w-5xl text-3xl font-semibold leading-tight text-ink md:text-4xl">{deal.article_title}</h1>
+      <p className="measure mt-4 text-base leading-8 text-muted">{deal.article_body}</p>
 
-      <section className="mt-8 grid gap-4 border-y border-line py-6 md:grid-cols-3">
-        <Metric label="买方" value={`${deal.buyer_name_cn}${deal.buyer_ticker ? ` (${deal.buyer_ticker})` : ""}`} />
-        <Metric label="卖方" value={deal.seller_names.join("、") || "未披露"} />
-        <Metric label="标的" value={deal.target_name_cn} />
-        <Metric label="国家/地区" value={deal.target_country_or_region ?? "未披露"} />
-        <Metric label="行业" value={deal.target_industry ?? "未披露"} />
-        <Metric label="交易对价" value={fmtMoney(deal.consideration_amount, deal.consideration_currency, deal.consideration_text)} />
-        <Metric label="股权变化" value={`${deal.stake_before ?? "未披露"} -> ${deal.stake_after ?? "未披露"}%`} />
-        <Metric label="支付方式" value={deal.payment_methods.join("、") || "未披露"} />
-        <Metric label="公告日期" value={fmtDate(deal.announcement_date)} />
-      </section>
+      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
+        <main className="space-y-8">
+          <section className="grid gap-4 border-y border-line py-6 md:grid-cols-3">
+            <Metric label="买方" value={`${deal.buyer_name_cn}${deal.buyer_ticker ? ` (${deal.buyer_ticker})` : ""}`} />
+            <Metric label="卖方" value={deal.seller_names.join("、") || "未披露"} />
+            <Metric label="标的" value={deal.target_name_cn} />
+            <Metric label="国家/地区" value={deal.target_country_or_region ?? "未披露"} />
+            <Metric label="行业" value={deal.target_industry ?? "未披露"} />
+            <Metric label="最新状态" value={deal.current_status} />
+            <Metric label="交易对价" value={fmtMoney(deal.consideration_amount, deal.consideration_currency, deal.consideration_text)} />
+            <Metric label="股权变化" value={`${deal.stake_before ?? "未披露"} -> ${deal.stake_after ?? "未披露"}%`} />
+            <Metric label="支付方式" value={deal.payment_methods.join("、") || "未披露"} />
+          </section>
 
-      <section className="mt-8 grid gap-6 md:grid-cols-2">
-        <Panel title="战略目的">
-          {deal.strategic_rationale.length ? deal.strategic_rationale.map((item) => <li key={item}>{item}</li>) : <li>未披露</li>}
-        </Panel>
-        <Panel title="信息缺口">
-          {deal.information_gaps.length ? deal.information_gaps.map((item) => <li key={item}>{item}</li>) : <li>暂无重大缺口</li>}
-        </Panel>
-      </section>
+          <section className="grid gap-6 md:grid-cols-2">
+            <Panel title="交易逻辑">
+              {deal.strategic_rationale.length ? deal.strategic_rationale.map((item) => <li key={item}>{item}</li>) : <li>未披露</li>}
+            </Panel>
+            <Panel title="审批及交割条件">
+              {deal.closing_conditions.length ? deal.closing_conditions.map((item) => <li key={item}>{item}</li>) : <li>未披露</li>}
+            </Panel>
+          </section>
 
-      <section className="mt-8 border border-line bg-white p-5">
-        <h2 className="text-xl font-semibold text-ink">公告时间线</h2>
-        <div className="mt-4 space-y-4">
-          {deal.sources.map((source) => (
-            <div key={`${source.title}-${source.published_at ?? ""}`} className="border-l-2 border-gold pl-4">
-              <div className="font-mono text-sm text-muted">{source.published_at ? fmtDate(source.published_at) : fmtDate(deal.announcement_date)}</div>
-              <div className="mt-1 font-medium text-ink">{source.title}</div>
-              <div className="mt-2"><SourceLink source={source} /></div>
+          <section className="border border-line bg-surface p-5">
+            <h2 className="text-xl font-semibold text-ink">交易时间线</h2>
+            <div className="mt-4 space-y-4">
+              {deal.sources.map((source) => (
+                <div key={`${source.title}-${source.published_at ?? ""}`} className="border-l-2 border-gold pl-4">
+                  <div className="tabular text-sm text-subtle">{source.published_at ? fmtDate(source.published_at) : fmtDate(deal.announcement_date)}</div>
+                  <div className="mt-1 font-medium text-ink">{source.title}</div>
+                  <div className="mt-2"><SourceLink source={source} /></div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
-      <div className="mt-6 flex justify-end">
-        <SuggestionButton targetType="deal" targetId={deal.canonical_deal_id} />
+          </section>
+        </main>
+
+        <aside className="space-y-5">
+          <Panel title="核心交易数据">
+            <li>公告日期：{fmtDate(deal.announcement_date)}</li>
+            <li>对价：{fmtMoney(deal.consideration_amount, deal.consideration_currency, deal.consideration_text)}</li>
+            <li>国家/地区：{deal.target_country_or_region ?? "未披露"}</li>
+            <li>行业：{deal.target_industry ?? "未披露"}</li>
+          </Panel>
+          <Panel title="信息缺口">
+            {deal.information_gaps.length ? deal.information_gaps.map((item) => <li key={item}>{item}</li>) : <li>暂无重大缺口</li>}
+          </Panel>
+          <div className="border border-line bg-surface p-5">
+            <h2 className="text-xl font-semibold text-ink">调整建议</h2>
+            <p className="mt-2 text-sm leading-6 text-muted">公众建议不会直接改变交易状态，需管理员复核。</p>
+            <div className="mt-4"><SuggestionButton targetType="deal" targetId={deal.canonical_deal_id} targetTitle={deal.article_title} /></div>
+          </div>
+        </aside>
       </div>
     </div>
   );
@@ -74,7 +92,7 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="border border-line bg-white p-5">
+    <div className="border border-line bg-surface p-5">
       <h2 className="text-xl font-semibold text-ink">{title}</h2>
       <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-muted">{children}</ul>
     </div>

@@ -9,6 +9,7 @@ env
 coverage
 playwright-report
 test-results
+design-audit
 *.log
 data/raw
 data/store.json

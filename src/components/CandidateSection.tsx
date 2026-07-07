@@ -9,7 +9,10 @@ export function CandidateSection({ candidates }: { candidates: CandidateItem[] }
   if (!candidates.length) return null;
   return (
     <section className="mt-10 border-t border-line pt-8">
-      <h2 className="text-2xl font-semibold text-ink">本期其他候选交易</h2>
+      <div className="flex items-center gap-3">
+        <span className="tabular text-sm font-semibold text-gold">04</span>
+        <h2 className="text-2xl font-semibold text-ink">本期其他候选交易</h2>
+      </div>
       <p className="mt-3 text-sm leading-7 text-muted">以下项目尚未纳入正式交易数据库，仅供参考，不代表网站确认其符合跨境并购筛选标准。</p>
       <CandidateGroup title={`待复核（${reviewItems.length}）`} items={reviewItems} targetType="review_item" />
       <CandidateGroup title={`已排除（${excludedItems.length}）`} items={excludedItems} targetType="excluded_candidate" />
@@ -19,8 +22,8 @@ export function CandidateSection({ candidates }: { candidates: CandidateItem[] }
 
 function CandidateGroup({ title, items, targetType }: { title: string; items: CandidateItem[]; targetType: string }) {
   return (
-    <details className="mt-4 border border-line bg-white p-4" open>
-      <summary className="cursor-pointer text-lg font-semibold text-ink">{title}</summary>
+    <details className="mt-4 border border-line bg-surface p-4" open>
+      <summary className="cursor-pointer text-base font-semibold text-ink marker:text-gold">{title}</summary>
       <div className="mt-4 grid gap-3">
         {items.length ? items.map((item) => <CandidateCard key={item.id} item={item} targetType={targetType} />) : <div className="text-sm text-muted">暂无记录。</div>}
       </div>
@@ -50,13 +53,13 @@ function CandidateCard({ item, targetType }: { item: CandidateItem; targetType: 
       </div>
       <div className="mt-4 flex flex-wrap gap-3">
         {canOpen ? (
-          <a className="focus-ring inline-flex items-center gap-2 border border-line bg-white px-4 py-2 text-sm text-ink hover:border-blue hover:text-blue" href={item.source_url ?? ""} target="_blank" rel="noreferrer">
+          <a className="focus-ring inline-flex items-center gap-2 border border-line bg-surface px-4 py-2 text-sm text-ink hover:border-gold" href={item.source_url ?? ""} target="_blank" rel="noreferrer">
             有效公告链接 <ExternalLink size={14} />
           </a>
         ) : (
-          <span className="border border-line bg-white px-4 py-2 text-sm text-muted">Wind公告库，公开链接未取得</span>
+          <span className="border border-line bg-surface px-4 py-2 text-sm text-muted">Wind公告库，公开链接未取得</span>
         )}
-        <SuggestionButton targetType={targetType} targetId={item.id} />
+        <SuggestionButton targetType={targetType} targetId={item.id} targetTitle={item.candidate_title} />
       </div>
     </article>
   );

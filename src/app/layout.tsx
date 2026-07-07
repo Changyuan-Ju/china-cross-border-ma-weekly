@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SiteNav } from "@/components/SiteNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,36 +8,17 @@ export const metadata: Metadata = {
   description: "中资企业跨境并购交易数据库及周报网站"
 };
 
-const navItems = [
-  ["首页", "/"],
-  ["交易数据库", "/deals"],
-  ["历史周报", "/archive"],
-  ["补充交易", "/submit"],
-  ["方法说明", "/methodology"],
-  ["运行记录", "/admin/runs"]
-];
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
       <body>
-        <header className="border-b border-line bg-white">
-          <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 md:flex-row md:items-end md:justify-between">
-            <Link href="/" className="group">
-              <div className="text-xs font-bold tracking-[0.18em] text-logo">CROSS-BORDER M&A</div>
-              <div className="mt-1 text-2xl font-semibold text-ink">中资企业跨境并购周报</div>
+        <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
+          <div className="shell flex min-h-16 flex-col gap-3 py-3 md:flex-row md:items-center md:justify-between">
+            <Link href="/" className="group inline-flex flex-col">
+              <div className="text-[11px] font-bold tracking-[0.22em] text-logo">CROSS-BORDER M&amp;A</div>
+              <div className="mt-0.5 text-xl font-semibold tracking-normal text-ink">中资企业跨境并购周报</div>
             </Link>
-            <nav className="flex flex-wrap gap-2">
-              {navItems.map(([label, href]) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="focus-ring border border-line bg-paper px-3 py-2 text-sm text-ink hover:border-blue hover:text-blue active:border-gold"
-                >
-                  {label}
-                </Link>
-              ))}
-            </nav>
+            <SiteNav />
           </div>
         </header>
         <main>{children}</main>

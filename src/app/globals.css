@@ -4,8 +4,24 @@
 
 :root {
   color-scheme: light;
-  background: #f1f1f1;
-  color: #404040;
+  --bg: #f4f2ee;
+  --surface: #fffdf9;
+  --surface-muted: #f1f1f1;
+  --ink: #2f2f2f;
+  --muted: #595959;
+  --subtle: #7a746c;
+  --line: #d9d5ce;
+  --line-strong: #c5c5c5;
+  --blue: #0c4e98;
+  --blue-2: #0f60a9;
+  --gold: #c19a66;
+  --gold-2: #b69b80;
+  --oxblood: #a10000;
+  --logo: #e61800;
+  --radius: 6px;
+  --radius-sm: 4px;
+  background: var(--bg);
+  color: var(--ink);
 }
 
 * {
@@ -14,9 +30,11 @@
 
 body {
   margin: 0;
-  background: #f1f1f1;
-  color: #404040;
-  font-family: Arial, "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Arial, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -26,8 +44,39 @@ a {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea,
+summary {
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, opacity 160ms ease;
+}
+
+::selection {
+  background: rgba(193, 154, 102, 0.28);
+}
+
+.shell {
+  width: min(100% - 32px, 1240px);
+  margin-inline: auto;
+}
+
+.measure {
+  max-width: 780px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.hairline {
+  border-color: var(--line);
 }
 
 .focus-ring {
@@ -36,5 +85,5 @@ select {
 }
 
 .focus-ring:focus-visible {
-  outline-color: #0f60a9;
+  outline-color: var(--gold);
 }

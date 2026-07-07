@@ -32,18 +32,21 @@ export default async function DealsPage({ searchParams }: { searchParams: Promis
   const deals = filteredDeals.slice((page - 1) * pageSize, page * pageSize);
   const totalPages = Math.max(1, Math.ceil(filteredDeals.length / pageSize));
 
+  const resultCount = status === "已纳入" ? filteredDeals.length : visibleCandidates.length;
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
+    <div className="shell py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-semibold text-ink">交易数据库</h1>
-        <p className="mt-2 text-sm text-muted">支持按公司、证券代码、标的、国家/地区、行业和交易阶段检索。</p>
+        <div className="text-xs font-bold tracking-[0.18em] text-gold">DEAL DATABASE</div>
+        <h1 className="mt-2 text-3xl font-semibold text-ink md:text-4xl">交易数据库</h1>
+        <p className="mt-3 text-sm leading-7 text-muted">按公司、证券代码、标的、国家/地区、行业、阶段和状态筛选。待复核及已排除项目单独展示，不计入正式交易统计。</p>
       </div>
       <Suspense>
-        <Filters countries={countries} industries={industries} stages={stages} />
+        <Filters countries={countries} industries={industries} stages={stages} resultCount={resultCount} />
       </Suspense>
       <div className="mt-6 grid gap-4">
         {status === "已纳入" ? (
-          deals.length ? deals.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} />) : <div className="border border-line bg-white p-6 text-sm text-muted">没有符合条件的交易。</div>
+          deals.length ? deals.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} variant="compact" />) : <div className="border border-line bg-surface p-6 text-sm text-muted">没有符合条件的交易。</div>
         ) : (
           <CandidateSection candidates={visibleCandidates} />
         )}

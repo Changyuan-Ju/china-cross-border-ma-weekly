@@ -5,10 +5,11 @@ export const dynamic = "force-dynamic";
 export default async function RunsPage() {
   const store = await readStore();
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="text-3xl font-semibold text-ink">后台运行记录</h1>
-      <p className="mt-2 text-sm text-muted">生产环境应在边缘网关或中间件层用 ADMIN_SECRET 保护本页面。</p>
-      <div className="mt-6 overflow-x-auto border border-line bg-white">
+    <div className="shell py-8">
+      <div className="text-xs font-bold tracking-[0.18em] text-gold">INGESTION RUNS</div>
+      <h1 className="mt-2 text-3xl font-semibold text-ink md:text-4xl">运行记录</h1>
+      <p className="mt-3 text-sm leading-7 text-muted">展示周报采集与入库任务的公开运行摘要，不包含密钥、连接字符串或内部配置。</p>
+      <div className="mt-6 overflow-x-auto border border-line bg-surface">
         <table className="w-full min-w-[900px] border-collapse text-left text-sm">
           <thead className="bg-paper text-ink">
             <tr>

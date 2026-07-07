@@ -1,10 +1,11 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { SlidersHorizontal, Search, X } from "lucide-react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-export function Filters({ countries, industries, stages }: { countries: string[]; industries: string[]; stages: string[] }) {
+export function Filters({ countries, industries, stages, resultCount }: { countries: string[]; industries: string[]; stages: string[]; resultCount?: number }) {
   const params = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState(params.get("q") ?? "");
@@ -21,10 +22,22 @@ export function Filters({ countries, industries, stages }: { countries: string[]
     update("q", query);
   }
 
+  const activeCount = ["country", "industry", "stage", "status"].filter((key) => params.get(key) && !(key === "status" && params.get(key) === "已纳入")).length + (params.get("q") ? 1 : 0);
+
   return (
-    <form onSubmit={submit} className="border border-line bg-white p-4">
+    <form onSubmit={submit} className="border border-line bg-surface p-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm">
+        <div className="font-medium text-ink">结果：<span className="tabular">{resultCount ?? 0}</span> 条</div>
+        <Link className="focus-ring inline-flex items-center gap-1 border border-line px-3 py-1.5 text-muted hover:border-gold hover:text-ink" href="/deals">
+          <X size={14} /> 清除筛选
+        </Link>
+      </div>
+      <details className="md:contents" open>
+        <summary className="mb-3 flex cursor-pointer items-center gap-2 border border-line bg-paper px-3 py-2 text-sm font-medium text-ink md:hidden">
+          <SlidersHorizontal size={16} /> 筛选 {activeCount ? `（${activeCount}）` : ""}
+        </summary>
       <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
-        <label className="flex items-center gap-2 border border-line bg-paper px-3 py-2">
+        <label className="focus-within:border-gold flex items-center gap-2 border border-line bg-paper px-3 py-2">
           <Search size={16} className="text-muted" />
           <input className="w-full bg-transparent text-sm outline-none" placeholder="搜索公司、证券代码、标的或正文" value={query} onChange={(event) => setQuery(event.target.value)} />
         </label>
@@ -42,8 +55,9 @@ export function Filters({ countries, industries, stages }: { countries: string[]
           onChange={(value) => update("status", value)}
         />
       </div>
+      </details>
       <div className="mt-3 flex justify-end">
-        <button className="focus-ring border border-blue bg-blue px-4 py-2 text-sm font-semibold text-white hover:bg-blue2 active:bg-ink" type="submit">
+        <button className="focus-ring border border-ink bg-ink px-4 py-2 text-sm font-semibold text-white hover:border-gold active:bg-ink" type="submit">
           搜索
         </button>
       </div>
@@ -53,7 +67,7 @@ export function Filters({ countries, industries, stages }: { countries: string[]
 
 function Select({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (value: string) => void }) {
   return (
-    <select aria-label={label} className="focus-ring border border-line bg-paper px-3 py-2 text-sm text-ink" value={value} onChange={(event) => onChange(event.target.value)}>
+    <select aria-label={label} className="focus-ring w-full border border-line bg-paper px-3 py-2 text-sm text-ink hover:border-gold" value={value} onChange={(event) => onChange(event.target.value)}>
       <option value="">{label}</option>
       {options.map((option) => (
         <option key={option} value={option}>
