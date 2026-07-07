@@ -12,7 +12,6 @@ function loadEnvFile(file) {
   }
 }
 
-loadEnvFile("env");
 loadEnvFile(".env");
 
 const prisma = new PrismaClient();

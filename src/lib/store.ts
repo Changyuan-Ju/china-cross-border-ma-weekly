@@ -93,12 +93,16 @@ function mergeDeal(previous: Deal, next: Deal): Deal {
 
 async function readDatabaseStore(): Promise<Store> {
   const [deals, issues, runs] = await Promise.all([
-    prisma.deal.findMany({ where: { validationStatus: "valid" }, include: { sources: true }, orderBy: [{ manualPriority: "asc" }, { importanceScore: "desc" }, { latestAnnouncementDate: "desc" }] }),
+    prisma.deal.findMany({
+      where: { validationStatus: "valid" },
+      include: { sources: true, events: { include: { sourceLinks: true }, orderBy: { announcementDate: "asc" } } },
+      orderBy: [{ manualPriority: "asc" }, { importanceScore: "desc" }, { latestAnnouncementDate: "desc" }]
+    }),
     prisma.weeklyIssue.findMany({ orderBy: { endDate: "desc" } }),
     prisma.ingestionRun.findMany({ orderBy: { runStartedAt: "desc" }, take: 50 })
   ]);
 
-  type DealWithSources = Prisma.DealGetPayload<{ include: { sources: true } }>;
+  type DealWithSources = Prisma.DealGetPayload<{ include: { sources: true; events: { include: { sourceLinks: true } } } }>;
   type IssueRow = Prisma.WeeklyIssueGetPayload<object>;
   type RunRow = Prisma.IngestionRunGetPayload<object>;
 
@@ -149,6 +153,18 @@ async function readDatabaseStore(): Promise<Store> {
       strategic_rationale: [],
       article_title: deal.articleTitle,
       article_body: deal.articleBody,
+      detailed_summary: deal.detailedSummary,
+      transaction_facts: deal.transactionFacts,
+      transaction_structure: deal.transactionStructure,
+      target_profile: deal.targetProfile as Deal["target_profile"],
+      target_financials: deal.targetFinancials as Deal["target_financials"],
+      consideration_breakdown: deal.considerationBreakdown as Deal["consideration_breakdown"],
+      pricing_basis: deal.pricingBasis,
+      approvals_and_conditions: deal.approvalsAndConditions as Deal["approvals_and_conditions"],
+      key_dates: deal.keyDates as Deal["key_dates"],
+      field_evidence: deal.fieldEvidence as Deal["field_evidence"],
+      last_verified_at: deal.lastVerifiedAt?.toISOString(),
+      is_manual_supplement: deal.isManualSupplement,
       information_gaps: deal.informationGaps,
       visible_tags: deal.visibleTags,
       importance_score: deal.importanceScore,
@@ -166,7 +182,28 @@ async function readDatabaseStore(): Promise<Store> {
       })),
       evidence: {},
       validation_status: deal.validationStatus as Deal["validation_status"],
-      manual_priority: deal.manualPriority
+      manual_priority: deal.manualPriority,
+      events: deal.events.map((event) => ({
+        id: event.id,
+        announcement_date: event.announcementDate.toISOString().slice(0, 10),
+        announcement_type: event.announcementType,
+        transaction_stage: event.transactionStage,
+        title: event.title,
+        body: event.body,
+        source_fingerprint: event.sourceFingerprint,
+        evidence: event.evidence as Record<string, unknown>,
+        sources: event.sourceLinks.map((source) => ({
+          title: source.title,
+          url: source.url,
+          publisher: source.publisher ?? undefined,
+          published_at: source.publishedAt?.toISOString().slice(0, 10),
+          source_type: source.sourceType,
+          is_primary: source.isPrimary,
+          link_status: source.linkStatus as Deal["sources"][number]["link_status"],
+          last_verified_at: source.lastVerifiedAt?.toISOString(),
+          wind_record_id: source.windRecordId ?? undefined
+        }))
+      }))
     })),
     runs: (runs as RunRow[]).map((run) => ({ ...(run.payload as WeeklyPayload), id: run.id, status: run.status }))
   };

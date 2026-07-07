@@ -13,6 +13,7 @@
     "prisma:generate": "prisma generate",
     "postinstall": "prisma generate",
     "ingest:weekly": "tsx scripts/ingest-weekly.ts",
+    "backfill:initial-details": "node scripts/backfill-initial-weekly-details.cjs",
     "moderation:list": "node scripts/moderation.cjs list",
     "moderation:show": "node scripts/moderation.cjs show",
     "moderation:approve": "node scripts/moderation.cjs approve",

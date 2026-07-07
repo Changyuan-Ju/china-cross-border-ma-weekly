@@ -20,7 +20,30 @@ export default async function DealsPage({ searchParams }: { searchParams: Promis
   const visibleCandidates = candidates.filter((item) => (status === "待复核" ? item.status === "review_required" : item.status === "excluded"));
   const filteredDeals = rankDeals(
     store.deals.filter((deal) => {
-      const haystack = [deal.buyer_name_cn, deal.buyer_ticker, deal.target_name_cn, deal.article_title, deal.article_body].filter(Boolean).join(" ").toLowerCase();
+      const haystack = [
+        deal.buyer_name_cn,
+        deal.buyer_name_en,
+        deal.buyer_ticker,
+        deal.seller_names.join(" "),
+        deal.target_name_cn,
+        deal.target_name_en,
+        deal.target_country_or_region,
+        deal.target_primary_asset_location,
+        deal.target_industry,
+        deal.target_business,
+        deal.deal_direction,
+        deal.transaction_type,
+        deal.current_status,
+        deal.payment_methods.join(" "),
+        deal.article_title,
+        deal.article_body,
+        deal.detailed_summary,
+        deal.transaction_facts,
+        deal.transaction_structure,
+        deal.pricing_basis,
+        JSON.stringify(deal.target_profile ?? {}),
+        JSON.stringify(deal.consideration_breakdown ?? {})
+      ].filter(Boolean).join(" ").toLowerCase();
       return (
         (!q || haystack.includes(q)) &&
         (!params.country || deal.target_country_or_region === params.country) &&

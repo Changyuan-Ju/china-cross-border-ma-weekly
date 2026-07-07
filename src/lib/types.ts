@@ -47,6 +47,18 @@ export type Deal = {
   strategic_rationale: string[];
   article_title: string;
   article_body: string;
+  detailed_summary?: string | null;
+  transaction_facts?: string | null;
+  transaction_structure?: string | null;
+  target_profile?: Record<string, unknown> | null;
+  target_financials?: Array<Record<string, unknown>> | Record<string, unknown> | null;
+  consideration_breakdown?: Record<string, unknown> | null;
+  pricing_basis?: string | null;
+  approvals_and_conditions?: Record<string, unknown> | null;
+  key_dates?: Record<string, string | null | undefined> | null;
+  field_evidence?: Record<string, unknown> | null;
+  last_verified_at?: string | null;
+  is_manual_supplement?: boolean;
   information_gaps: string[];
   visible_tags: string[];
   importance_score: number;
@@ -55,6 +67,19 @@ export type Deal = {
   evidence: Record<string, string>;
   validation_status: ValidationStatus;
   manual_priority?: number | null;
+  events?: DealEventItem[];
+};
+
+export type DealEventItem = {
+  id: string;
+  announcement_date: string;
+  announcement_type: string;
+  transaction_stage: string;
+  title: string;
+  body: string;
+  source_fingerprint: string;
+  evidence?: Record<string, unknown>;
+  sources?: DealSource[];
 };
 
 export type ExcludedItem = {

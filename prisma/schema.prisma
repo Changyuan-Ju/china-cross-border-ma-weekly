@@ -35,6 +35,18 @@ model Deal {
   currentStatus          String
   articleTitle           String
   articleBody            String
+  detailedSummary        String?
+  transactionFacts       String?
+  transactionStructure   String?
+  targetProfile          Json?
+  targetFinancials       Json?
+  considerationBreakdown Json?
+  pricingBasis           String?
+  approvalsAndConditions Json?
+  keyDates               Json?
+  fieldEvidence          Json?
+  lastVerifiedAt         DateTime?
+  isManualSupplement     Boolean             @default(false)
   informationGaps        String[]
   visibleTags            String[]
   importanceScore        Int

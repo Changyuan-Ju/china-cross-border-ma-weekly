@@ -12,6 +12,7 @@ export function DealCard({ deal, featured = false, variant }: { deal: Deal; feat
   const compact = mode === "compact";
   const stageTone = deal.transaction_stage === "completed" ? "green" : deal.transaction_stage === "terminated" ? "red" : featured ? "gold" : "neutral";
   const stake = deal.stake_after || deal.stake_change ? `${deal.stake_change ?? "未披露"}% / ${deal.stake_after ?? "未披露"}%` : "未披露";
+  const body = deal.detailed_summary ?? deal.article_body;
   return (
     <article className={clsx("space-y-4 border border-line bg-surface hover:border-line2", compact ? "p-4" : "p-5")}>
       <div className={clsx("flex flex-col gap-2", !compact && "md:flex-row md:items-start md:justify-between")}>
@@ -33,7 +34,7 @@ export function DealCard({ deal, featured = false, variant }: { deal: Deal; feat
         <Metric label="股权比例" value={stake} />
         <Metric label="交易对价" value={fmtMoney(deal.consideration_amount, deal.consideration_currency, deal.consideration_text)} />
       </div>
-      <p className="text-sm leading-7 text-muted">{compact ? truncate(deal.article_body, 150) : deal.article_body}</p>
+      <p className="text-sm leading-7 text-muted">{compact ? truncate(body, 150) : body}</p>
       <div className="flex flex-wrap gap-3">
         <Link className="focus-ring border border-ink bg-ink px-4 py-2 text-sm font-semibold text-white hover:border-gold hover:bg-[#3a342f] active:bg-ink" href={`/deals/${deal.canonical_deal_id}`}>
           查看交易详情
