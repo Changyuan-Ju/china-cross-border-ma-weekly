@@ -46,7 +46,7 @@ export function Filters({ countries, industries, stages, resultCount }: { countr
         <Select label="阶段" value={params.get("stage") ?? ""} options={stages} onChange={(value) => update("stage", value)} />
         <Select
           label="状态"
-          value={params.get("status") ?? "included"}
+          value={params.get("status") ?? "已纳入"}
           options={[
             "已纳入",
             "待复核",

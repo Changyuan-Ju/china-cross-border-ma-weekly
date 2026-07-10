@@ -2,6 +2,7 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import type { Deal } from "@/lib/types";
 import { fmtDate, fmtMoney, stageLabel } from "@/lib/format";
+import { dedupeTags } from "@/lib/tag-utils";
 import { Badge } from "./Badge";
 import { SourceLink } from "./SourceLink";
 import { SuggestionButton } from "./SuggestionButton";
@@ -11,6 +12,7 @@ export function DealCard({ deal, featured = false, variant }: { deal: Deal; feat
   const mode = variant ?? (featured ? "featured" : "standard");
   const compact = mode === "compact";
   const stageTone = deal.transaction_stage === "completed" ? "green" : deal.transaction_stage === "terminated" ? "red" : featured ? "gold" : "neutral";
+  const displayTags = dedupeTags(deal.visible_tags, [stageLabel(deal.transaction_stage)]);
   const stake = deal.stake_after || deal.stake_change ? `${deal.stake_change ?? "未披露"}% / ${deal.stake_after ?? "未披露"}%` : "未披露";
   const body = deal.detailed_summary ?? deal.article_body;
   return (
@@ -19,7 +21,7 @@ export function DealCard({ deal, featured = false, variant }: { deal: Deal; feat
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap gap-2">
             <Badge tone={stageTone}>{stageLabel(deal.transaction_stage)}</Badge>
-            {deal.visible_tags.slice(0, compact ? 2 : 4).map((tag) => (
+            {displayTags.slice(0, compact ? 2 : 4).map((tag) => (
               <Badge key={tag}>{tag}</Badge>
             ))}
           </div>

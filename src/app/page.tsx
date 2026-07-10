@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Archive, Database, FileText, Globe2 } from "lucide-react";
 import { DealCard } from "@/components/DealCard";
-import { fmtIssueRange } from "@/lib/format";
+import { fmtIssueRange, fmtIssueSummary } from "@/lib/format";
 import { rankDeals, topDeals } from "@/lib/ranking";
 import { readStore } from "@/lib/store";
 
@@ -14,7 +14,7 @@ export default async function HomePage() {
   const featured = topDeals(issueDeals);
   const others = rankDeals(issueDeals).filter((deal) => !featured.some((item) => item.canonical_deal_id === deal.canonical_deal_id));
   const countries = new Set(issueDeals.map((deal) => deal.target_country_or_region).filter(Boolean));
-  const initialCount = issueDeals.filter((deal) => deal.announcement_type === "initial").length;
+  const initialCount = issueDeals.filter((deal) => (deal.events ?? []).some((event) => event.announcement_type === "initial") || deal.announcement_type === "initial").length;
   const completedCount = issueDeals.filter((deal) => deal.transaction_stage === "completed").length;
 
   return (
@@ -25,7 +25,7 @@ export default async function HomePage() {
             <div className="text-xs font-bold tracking-[0.18em] text-gold">最新周报</div>
             <h1 className="mt-3 max-w-4xl text-4xl font-semibold leading-tight tracking-normal text-ink md:text-[42px]">{latest ? fmtIssueRange(latest.start_date, latest.end_date) : "暂无已发布周报"}</h1>
             <p className="measure mt-4 text-base leading-8 text-muted">
-              {latest?.summary ?? "暂无可展示周报。"}
+              {latest ? fmtIssueSummary(latest.summary, latest.included_count, latest.review_required_count) : "暂无可展示周报。"}
             </p>
             <div className="mt-4 flex items-center gap-2 text-sm text-subtle">
               <FileText size={16} className="text-gold" />

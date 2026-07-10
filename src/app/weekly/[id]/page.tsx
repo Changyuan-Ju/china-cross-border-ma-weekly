@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { CandidateSection } from "@/components/CandidateSection";
 import { DealCard } from "@/components/DealCard";
-import { fmtIssueRange, fmtMoney } from "@/lib/format";
+import { fmtIssueRange, fmtIssueSummary, fmtMoney } from "@/lib/format";
 import { rankDeals, topDeals } from "@/lib/ranking";
 import { readStore } from "@/lib/store";
 import { getIssueCandidates } from "@/lib/candidates";
@@ -15,7 +15,8 @@ export default async function WeeklyPage({ params }: { params: Promise<{ id: str
 
   const deals = store.deals.filter((deal) => issue.deal_ids.includes(deal.canonical_deal_id));
   const featured = topDeals(deals);
-  const rest = rankDeals(deals);
+  const featuredIds = new Set(featured.map((deal) => deal.canonical_deal_id));
+  const rest = rankDeals(deals).filter((deal) => !featuredIds.has(deal.canonical_deal_id));
   const candidates = await getIssueCandidates(id);
   const countries = uniqueText(deals.map((deal) => deal.target_country_or_region)).join("、") || "未披露";
   const industries = uniqueText(deals.map((deal) => deal.target_industry)).slice(0, 3).join("、") || "未披露";
@@ -29,7 +30,7 @@ export default async function WeeklyPage({ params }: { params: Promise<{ id: str
       <section className="border-b border-line pb-7">
         <div className="text-xs font-bold tracking-[0.18em] text-gold">WEEKLY BRIEFING</div>
         <h1 className="mt-3 text-3xl font-semibold leading-tight text-ink md:text-4xl">{fmtIssueRange(issue.start_date, issue.end_date)} 周报</h1>
-        <p className="measure mt-4 text-base leading-8 text-muted">{issue.summary}</p>
+        <p className="measure mt-4 text-base leading-8 text-muted">{fmtIssueSummary(issue.summary, issue.included_count, issue.review_required_count)}</p>
         <div className="mt-5 grid gap-3 text-sm md:grid-cols-3">
           <BriefMeta label="主要国家/地区" value={countries} />
           <BriefMeta label="主要行业" value={industries} />
@@ -62,7 +63,7 @@ export default async function WeeklyPage({ params }: { params: Promise<{ id: str
 
       <SectionTitle number="03" title="其他交易" />
       <div className="mt-4 grid gap-3">
-        {rest.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} variant="compact" />)}
+        {rest.length ? rest.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} variant="compact" />) : <div className="border border-line bg-surface p-5 text-sm text-muted">本期其余正式交易已全部列入重点交易。</div>}
       </div>
 
       <CandidateSection candidates={candidates} />

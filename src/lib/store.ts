@@ -4,6 +4,7 @@ import path from "node:path";
 import { hasDatabaseUrl, prisma } from "./db";
 import type { Deal, Store, WeeklyPayload } from "./types";
 import { rankDeals } from "./ranking";
+import { dedupeTags } from "./tag-utils";
 
 const DATA_PATH = path.resolve(process.cwd(), process.env.LOCAL_DATA_PATH ?? "data/store.json");
 
@@ -85,7 +86,7 @@ function mergeDeal(previous: Deal, next: Deal): Deal {
     ...previous,
     ...next,
     information_gaps: Array.from(new Set([...previous.information_gaps, ...next.information_gaps])),
-    visible_tags: Array.from(new Set([...previous.visible_tags, ...next.visible_tags])),
+    visible_tags: dedupeTags([...previous.visible_tags, ...next.visible_tags]),
     sources: Array.from(new Map([...previous.sources, ...next.sources].map((source) => [source.url, source])).values()),
     importance_score: Math.max(previous.importance_score, next.importance_score)
   };
@@ -166,7 +167,7 @@ async function readDatabaseStore(): Promise<Store> {
       last_verified_at: deal.lastVerifiedAt?.toISOString(),
       is_manual_supplement: deal.isManualSupplement,
       information_gaps: deal.informationGaps,
-      visible_tags: deal.visibleTags,
+      visible_tags: dedupeTags(deal.visibleTags),
       importance_score: deal.importanceScore,
       importance_score_breakdown: deal.importanceBreakdown as Record<string, number>,
       sources: deal.sources.map((source) => ({

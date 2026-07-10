@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { dedupeTags } from "./tag-utils";
 
 const sourceSchema = z.object({
   title: z.string().min(1),
@@ -60,7 +61,7 @@ const dealSchema = z.object({
   last_verified_at: z.string().nullable().optional(),
   is_manual_supplement: z.boolean().optional(),
   information_gaps: z.array(z.string()).default([]),
-  visible_tags: z.array(z.string()).default([]),
+  visible_tags: z.array(z.string()).default([]).transform((tags) => dedupeTags(tags)),
   importance_score: z.number().int().min(0).max(100),
   importance_score_breakdown: z.record(z.number()),
   sources: z.array(sourceSchema).min(1),

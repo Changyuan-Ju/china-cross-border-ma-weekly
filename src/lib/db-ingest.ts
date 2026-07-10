@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { prisma } from "./db";
 import { makeSourceFingerprint } from "./deal-utils";
+import { buildIssueSummary } from "./format";
+import { dedupeTags } from "./tag-utils";
 import type { Deal, WeeklyPayload } from "./types";
 
 export async function upsertWeeklyPayloadToDatabase(payload: WeeklyPayload) {
@@ -8,6 +10,7 @@ export async function upsertWeeklyPayloadToDatabase(payload: WeeklyPayload) {
   const issueId = `${payload.issue_start_date}-to-${payload.issue_end_date}`;
   const validDeals = payload.deals.filter((deal) => deal.validation_status === "valid");
   const acceptedDeals = payload.deals.filter((deal) => deal.validation_status !== "rejected");
+  const issueSummary = buildIssueSummary(payload.included_count, payload.review_required_count);
 
   await prisma.ingestionRun.upsert({
     where: { id: runId },
@@ -58,13 +61,21 @@ export async function upsertWeeklyPayloadToDatabase(payload: WeeklyPayload) {
 
   await prisma.weeklyIssue.upsert({
     where: { id: issueId },
-    update: { dealIds: validDeals.map((deal) => deal.canonical_deal_id), publishedAt: new Date(payload.run_completed_at) },
+    update: {
+      summary: issueSummary,
+      dealIds: validDeals.map((deal) => deal.canonical_deal_id),
+      candidateCount: payload.candidate_count,
+      includedCount: payload.included_count,
+      excludedCount: payload.excluded_count,
+      reviewRequiredCount: payload.review_required_count,
+      publishedAt: new Date(payload.run_completed_at)
+    },
     create: {
       id: issueId,
       startDate: new Date(payload.issue_start_date),
       endDate: new Date(payload.issue_end_date),
       title: `${payload.issue_start_date} to ${payload.issue_end_date} Cross-border M&A Weekly`,
-      summary: `Included ${payload.included_count} deal(s); ${payload.review_required_count} item(s) require review.`,
+      summary: issueSummary,
       dealIds: validDeals.map((deal) => deal.canonical_deal_id),
       candidateCount: payload.candidate_count,
       includedCount: payload.included_count,
@@ -97,7 +108,10 @@ async function upsertDeal(deal: Deal, runId: string) {
       fieldEvidence: deal.field_evidence as object | undefined,
       lastVerifiedAt: deal.last_verified_at ? new Date(deal.last_verified_at) : undefined,
       isManualSupplement: deal.is_manual_supplement ?? false,
-      informationGaps: deal.information_gaps
+      informationGaps: deal.information_gaps,
+      visibleTags: dedupeTags(deal.visible_tags),
+      importanceScore: deal.importance_score,
+      importanceBreakdown: deal.importance_score_breakdown
     },
     create: {
       id: deal.canonical_deal_id,
@@ -139,7 +153,7 @@ async function upsertDeal(deal: Deal, runId: string) {
       lastVerifiedAt: deal.last_verified_at ? new Date(deal.last_verified_at) : null,
       isManualSupplement: deal.is_manual_supplement ?? false,
       informationGaps: deal.information_gaps,
-      visibleTags: deal.visible_tags,
+      visibleTags: dedupeTags(deal.visible_tags),
       importanceScore: deal.importance_score,
       importanceBreakdown: deal.importance_score_breakdown,
       validationStatus: deal.validation_status,

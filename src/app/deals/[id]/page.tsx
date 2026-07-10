@@ -2,8 +2,9 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/Badge";
 import { SourceLink } from "@/components/SourceLink";
 import { SuggestionButton } from "@/components/SuggestionButton";
-import { fmtDate, fmtMoney, stageLabel } from "@/lib/format";
+import { announcementTypeLabel, fmtDate, fmtMoney, linkStatusLabel, sourceTypeLabel, stageLabel, validationLabel } from "@/lib/format";
 import { readStore } from "@/lib/store";
+import { dedupeTags } from "@/lib/tag-utils";
 import type { Deal, DealEventItem } from "@/lib/types";
 
 export default async function DealDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -15,13 +16,14 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
   const timeline = deal.events?.length ? deal.events : sourcesAsEvents(deal);
   const summary = deal.detailed_summary ?? deal.article_body;
   const strategicRationale = deal.strategic_rationale.length ? deal.strategic_rationale : textList((deal.target_profile as Record<string, unknown> | null | undefined)?.strategicRationale);
+  const displayTags = dedupeTags(deal.visible_tags, [stageLabel(deal.transaction_stage)]);
 
   return (
     <div className="shell py-8">
       <div className="mb-5 flex flex-wrap gap-2">
         <Badge tone={deal.transaction_stage === "completed" ? "green" : "gold"}>{stageLabel(deal.transaction_stage)}</Badge>
-        <Badge tone={deal.validation_status === "valid" ? "manual" : "red"}>{deal.validation_status}</Badge>
-        {deal.visible_tags.slice(0, 6).map((tag) => (
+        <Badge tone={deal.validation_status === "valid" ? "manual" : "red"}>{validationLabel(deal.validation_status)}</Badge>
+        {displayTags.slice(0, 6).map((tag) => (
           <Badge key={tag}>{tag}</Badge>
         ))}
         {deal.is_manual_supplement ? <Badge tone="gold">人工补充</Badge> : null}
@@ -82,7 +84,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
                 <div key={event.id} className="border-l-2 border-gold pl-4">
                   <div className="tabular text-sm text-subtle">{fmtDate(event.announcement_date)}</div>
                   <div className="mt-1 font-medium text-ink">{event.title}</div>
-                  <div className="mt-1 text-sm text-muted">{stageLabel(event.transaction_stage)} · {event.announcement_type}</div>
+                  <div className="mt-1 text-sm text-muted">{stageLabel(event.transaction_stage)} · {announcementTypeLabel(event.announcement_type)}</div>
                   {event.body ? <p className="mt-2 text-sm leading-7 text-muted">{event.body}</p> : null}
                   <div className="mt-2 flex flex-wrap gap-2">
                     {(event.sources?.length ? event.sources : deal.sources).map((source) => (
@@ -101,7 +103,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
                 <div key={`${source.title}-${source.published_at ?? ""}`} className="border-b border-line pb-3 last:border-b-0 last:pb-0">
                   <div className="font-medium text-ink">{source.title}</div>
                   <div className="mt-1 text-xs text-subtle">
-                    {source.publisher ?? "Wind公告库"} · {source.published_at ? fmtDate(source.published_at) : "日期未披露"} · {source.source_type ?? "wind_record"} · {source.link_status ?? "valid"}
+                    {source.publisher ?? "Wind公告库"} · {source.published_at ? fmtDate(source.published_at) : "日期未披露"} · {sourceTypeLabel(source.source_type ?? "wind_record")} · {linkStatusLabel(source.link_status ?? "valid")}
                   </div>
                   <div className="mt-2"><SourceLink source={source} /></div>
                 </div>

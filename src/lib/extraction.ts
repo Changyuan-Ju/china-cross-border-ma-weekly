@@ -1,4 +1,5 @@
 import type { Deal } from "./types";
+import { dedupeTags, paymentMethodTag } from "./tag-utils";
 
 export type RawCandidate = {
   title: string;
@@ -35,13 +36,13 @@ export function classifyAnnouncementType(stage: string) {
 }
 
 export function generateTags(deal: Pick<Deal, "deal_direction" | "transaction_type" | "payment_methods" | "obtains_control" | "validation_status">) {
-  return [
+  return dedupeTags([
     deal.deal_direction,
     deal.transaction_type,
-    ...deal.payment_methods.map((method) => `${method}支付`),
+    ...deal.payment_methods.map(paymentMethodTag),
     deal.obtains_control ? "取得控制权" : null,
     deal.validation_status === "review_required" ? "需要复核" : null
-  ].filter(Boolean) as string[];
+  ]);
 }
 
 export function scoreImportance(deal: Pick<Deal, "consideration_amount" | "obtains_control" | "transaction_stage" | "sources" | "information_gaps">) {

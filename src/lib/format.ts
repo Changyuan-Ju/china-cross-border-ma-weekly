@@ -16,6 +16,41 @@ export function fmtMoney(amount?: number | null, currency?: string | null, text?
   return `${currency} ${amount.toLocaleString("zh-CN")}`;
 }
 
+export function buildIssueSummary(includedCount: number, reviewRequiredCount: number) {
+  const reviewText = reviewRequiredCount ? `，另有 ${reviewRequiredCount} 笔待复核` : "";
+  return `本期正式纳入 ${includedCount} 笔中资企业跨境并购交易${reviewText}。`;
+}
+
+export function fmtIssueSummary(summary: string | null | undefined, includedCount: number, reviewRequiredCount: number) {
+  if (summary && !/^Included \d+ deal\(s\);/i.test(summary.trim())) return summary;
+  return buildIssueSummary(includedCount, reviewRequiredCount);
+}
+
+export function announcementTypeLabel(type: string) {
+  return type === "initial" ? "首次披露" : type === "update" ? "进展公告" : type;
+}
+
+export function validationLabel(status: string) {
+  const labels: Record<string, string> = { valid: "已核验", review_required: "待复核", rejected: "已排除" };
+  return labels[status] ?? status;
+}
+
+export function sourceTypeLabel(type: string) {
+  const labels: Record<string, string> = { wind_record: "Wind公告记录", exchange_filing: "交易所公告", company_announcement: "公司公告" };
+  return labels[type] ?? type;
+}
+
+export function linkStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    valid: "链接有效",
+    broken: "链接失效",
+    replaced: "链接已替换",
+    inaccessible: "暂不可访问",
+    not_publicly_available: "未取得公开链接"
+  };
+  return labels[status] ?? status;
+}
+
 export function stageLabel(stage: string) {
   const labels: Record<string, string> = {
     proposed: "提出交易",

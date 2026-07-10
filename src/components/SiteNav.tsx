@@ -16,7 +16,7 @@ const navItems = [
 export function SiteNav() {
   const pathname = usePathname();
   return (
-    <nav className="flex flex-wrap items-center gap-x-4 gap-y-2 md:justify-end">
+    <nav aria-label="主导航" className="flex flex-wrap items-center gap-x-4 gap-y-2 md:justify-end">
       {navItems.map(([label, href]) => {
         const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
         return (
