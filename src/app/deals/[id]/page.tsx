@@ -14,7 +14,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
   if (!deal) notFound();
 
   const timeline = deal.events?.length ? deal.events : sourcesAsEvents(deal);
-  const summary = deal.detailed_summary ?? deal.article_body;
+  const summary = deal.detailed_summary ?? deal.transaction_facts ?? deal.article_body;
   const strategicRationale = deal.strategic_rationale.length ? deal.strategic_rationale : textList((deal.target_profile as Record<string, unknown> | null | undefined)?.strategicRationale);
   const displayTags = dedupeTags(deal.visible_tags, [stageLabel(deal.transaction_stage)]);
 
@@ -49,7 +49,6 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
             <Metric label="支付方式" value={deal.payment_methods.join("、") || "未披露"} />
           </section>
 
-          <TextSection title="交易事实" content={deal.transaction_facts ?? deal.article_body} />
           <TextSection title="交易结构" content={deal.transaction_structure} />
 
           <section className="grid gap-6 md:grid-cols-2">
