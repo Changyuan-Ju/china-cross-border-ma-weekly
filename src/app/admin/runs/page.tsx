@@ -1,9 +1,9 @@
-import { readStore } from "@/lib/store";
+import { readRuns } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
 export default async function RunsPage() {
-  const store = await readStore();
+  const runs = await readRuns();
   return (
     <div className="shell py-8">
       <div className="text-xs font-bold tracking-[0.18em] text-gold">INGESTION RUNS</div>
@@ -24,7 +24,7 @@ export default async function RunsPage() {
             </tr>
           </thead>
           <tbody>
-            {store.runs.map((run) => (
+            {runs.map((run) => (
               <tr key={run.id} className="border-t border-line">
                 <Td>{run.run_started_at}</Td>
                 <Td>{run.issue_start_date} 至 {run.issue_end_date}</Td>
@@ -38,7 +38,7 @@ export default async function RunsPage() {
             ))}
           </tbody>
         </table>
-        {!store.runs.length ? <div className="p-6 text-sm text-muted">暂无运行记录。</div> : null}
+        {!runs.length ? <div className="p-6 text-sm text-muted">暂无运行记录。</div> : null}
       </div>
     </div>
   );

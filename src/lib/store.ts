@@ -1,7 +1,9 @@
 import { promises as fs } from "node:fs";
 import type { Prisma } from "@prisma/client";
+import { unstable_cache } from "next/cache";
 import path from "node:path";
 import { hasDatabaseUrl, prisma } from "./db";
+import { DATA_CACHE_SECONDS, PUBLIC_DATA_CACHE_TAG } from "./data-cache";
 import type { Deal, Store, WeeklyPayload } from "./types";
 import { rankDeals } from "./ranking";
 import { dedupeTags } from "./tag-utils";
@@ -29,10 +31,62 @@ async function ensureFile() {
 }
 
 export async function readStore(): Promise<Store> {
-  if (hasDatabaseUrl()) return readDatabaseStore();
+  if (hasDatabaseUrl()) return readCachedDatabaseStore();
   await ensureFile();
   const store = JSON.parse(await fs.readFile(DATA_PATH, "utf8")) as Store;
   return { ...store, deals: store.deals.filter((deal) => deal.validation_status === "valid") };
+}
+
+export type RunSummary = Pick<
+  Store["runs"][number],
+  | "id"
+  | "run_started_at"
+  | "issue_start_date"
+  | "issue_end_date"
+  | "candidate_count"
+  | "included_count"
+  | "excluded_count"
+  | "review_required_count"
+  | "status"
+  | "errors"
+>;
+
+export async function readRuns(): Promise<RunSummary[]> {
+  if (!hasDatabaseUrl()) {
+    await ensureFile();
+    const store = JSON.parse(await fs.readFile(DATA_PATH, "utf8")) as Store;
+    return store.runs;
+  }
+
+  const runs = await prisma.ingestionRun.findMany({
+    orderBy: { runStartedAt: "desc" },
+    take: 50,
+    select: {
+      id: true,
+      runStartedAt: true,
+      fromDate: true,
+      toDate: true,
+      candidateCount: true,
+      includedCount: true,
+      excludedCount: true,
+      reviewRequiredCount: true,
+      status: true,
+      errors: true
+    }
+  });
+
+  return runs.map((run) => ({
+    id: run.id,
+    run_started_at: run.runStartedAt.toISOString(),
+    issue_start_date: run.fromDate.toISOString().slice(0, 10),
+    issue_end_date: run.toDate.toISOString().slice(0, 10),
+    candidate_count: run.candidateCount,
+    included_count: run.includedCount,
+    excluded_count: run.excludedCount,
+    review_required_count: run.reviewRequiredCount,
+    status: run.status,
+    errors: Array.isArray(run.errors) ? run.errors.map(String) : []
+  }));
 }
 
 export async function writeStore(store: Store) {
@@ -92,20 +146,23 @@ function mergeDeal(previous: Deal, next: Deal): Deal {
   };
 }
 
+const readCachedDatabaseStore = unstable_cache(readDatabaseStore, ["database-public-store-v1"], {
+  revalidate: DATA_CACHE_SECONDS,
+  tags: [PUBLIC_DATA_CACHE_TAG]
+});
+
 async function readDatabaseStore(): Promise<Store> {
-  const [deals, issues, runs] = await Promise.all([
+  const [deals, issues] = await Promise.all([
     prisma.deal.findMany({
       where: { validationStatus: "valid" },
       include: { sources: true, events: { include: { sourceLinks: true }, orderBy: { announcementDate: "asc" } } },
       orderBy: [{ manualPriority: "asc" }, { importanceScore: "desc" }, { latestAnnouncementDate: "desc" }]
     }),
-    prisma.weeklyIssue.findMany({ orderBy: { endDate: "desc" } }),
-    prisma.ingestionRun.findMany({ orderBy: { runStartedAt: "desc" }, take: 50 })
+    prisma.weeklyIssue.findMany({ orderBy: { endDate: "desc" } })
   ]);
 
   type DealWithSources = Prisma.DealGetPayload<{ include: { sources: true; events: { include: { sourceLinks: true } } } }>;
   type IssueRow = Prisma.WeeklyIssueGetPayload<object>;
-  type RunRow = Prisma.IngestionRunGetPayload<object>;
 
   return {
     site: { name: "Cross-border M&A Weekly", editor: "Changyuan Ju", updated_at: new Date().toISOString() },
@@ -206,6 +263,6 @@ async function readDatabaseStore(): Promise<Store> {
         }))
       }))
     })),
-    runs: (runs as RunRow[]).map((run) => ({ ...(run.payload as WeeklyPayload), id: run.id, status: run.status }))
+    runs: []
   };
 }

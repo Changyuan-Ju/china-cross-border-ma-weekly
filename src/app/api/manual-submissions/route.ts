@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { invalidateCandidateDataCache } from "@/lib/data-cache";
 import { cleanText, isRateLimited, optionalUrl, requestIp, stableHash } from "@/lib/public-input";
 
 export async function POST(request: Request) {
@@ -23,6 +24,7 @@ export async function POST(request: Request) {
     create: { id: randomUUID(), title, sourceUrl, status: "review_required", submissionHash },
     select: { id: true, status: true }
   });
+  invalidateCandidateDataCache();
 
   return NextResponse.json({ ok: true, id: item.id, status: item.status });
 }

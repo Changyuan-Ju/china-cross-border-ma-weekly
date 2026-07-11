@@ -1,7 +1,9 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "./db";
+import { CANDIDATE_DATA_CACHE_TAG, DATA_CACHE_SECONDS } from "./data-cache";
 import type { CandidateItem, Deal } from "./types";
 
-export async function getIssueCandidates(issueId: string): Promise<CandidateItem[]> {
+async function readIssueCandidates(issueId: string): Promise<CandidateItem[]> {
   const [start, end] = issueId.split("-to-");
   const runIdPrefix = `run-`;
   const runs = await prisma.ingestionRun.findMany({ where: { issueId, id: { startsWith: runIdPrefix } }, select: { id: true } });
@@ -83,6 +85,11 @@ export async function getIssueCandidates(issueId: string): Promise<CandidateItem
 
   return [...reviewCandidates, ...manualCandidates, ...excludedItems];
 }
+
+export const getIssueCandidates = unstable_cache(readIssueCandidates, ["issue-candidates-v1"], {
+  revalidate: DATA_CACHE_SECONDS,
+  tags: [CANDIDATE_DATA_CACHE_TAG]
+});
 
 export async function getAllCandidates(): Promise<CandidateItem[]> {
   const issues = await prisma.weeklyIssue.findMany({ select: { id: true }, orderBy: { endDate: "desc" }, take: 20 });

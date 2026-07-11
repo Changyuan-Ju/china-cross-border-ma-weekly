@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { hasDatabaseUrl } from "@/lib/db";
+import { invalidateWeeklyDataCache } from "@/lib/data-cache";
 import { upsertWeeklyPayloadToDatabase } from "@/lib/db-ingest";
 import { weeklyPayloadSchema } from "@/lib/schema";
 import { upsertWeeklyPayload } from "@/lib/store";
@@ -18,5 +19,6 @@ export async function POST(request: Request) {
   }
 
   const result = hasDatabaseUrl() ? await upsertWeeklyPayloadToDatabase(parsed.data) : await upsertWeeklyPayload(parsed.data);
+  invalidateWeeklyDataCache();
   return NextResponse.json({ ok: true, ...result });
 }
