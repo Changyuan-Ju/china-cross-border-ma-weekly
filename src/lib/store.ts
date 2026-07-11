@@ -146,7 +146,7 @@ function mergeDeal(previous: Deal, next: Deal): Deal {
   };
 }
 
-const readCachedDatabaseStore = unstable_cache(readDatabaseStore, ["database-public-store-v1"], {
+const readCachedDatabaseStore = unstable_cache(readDatabaseStore, ["database-public-store-v2"], {
   revalidate: DATA_CACHE_SECONDS,
   tags: [PUBLIC_DATA_CACHE_TAG]
 });

@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import type { DealSource } from "./types";
 
 export function fmtDate(value: string | Date) {
   return format(new Date(value), "yyyy-MM-dd");
@@ -49,6 +50,22 @@ export function linkStatusLabel(status: string) {
     not_publicly_available: "未取得公开链接"
   };
   return labels[status] ?? status;
+}
+
+export function sourceMetaParts(source: DealSource) {
+  const rawPublisher = source.publisher?.trim();
+  const publisher = rawPublisher?.replace(/[，,]\s*公开链接未取得.*$/u, "") || (source.source_type === "wind_record" ? "Wind公告库" : undefined);
+  const type = sourceTypeLabel(source.source_type ?? "wind_record");
+  const status = linkStatusLabel(source.link_status ?? (source.url ? "valid" : "not_publicly_available"));
+  const typeIsRedundant = Boolean(
+    publisher && ((source.source_type === "wind_record" && publisher.includes("Wind公告库")) || publisher.includes(type))
+  );
+  return Array.from(new Set([
+    publisher,
+    source.published_at ? fmtDate(source.published_at) : "日期未披露",
+    typeIsRedundant ? undefined : type,
+    status
+  ].filter(Boolean) as string[]));
 }
 
 export function stageLabel(stage: string) {

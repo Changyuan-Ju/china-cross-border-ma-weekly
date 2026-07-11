@@ -15,6 +15,7 @@
     "ingest:weekly": "tsx scripts/ingest-weekly.ts",
     "backfill:initial-details": "node scripts/backfill-initial-weekly-details.cjs",
     "backfill:editorial-summaries": "node scripts/backfill-editorial-summaries.cjs --apply",
+    "repair:text-corruption": "node scripts/repair-text-corruption.cjs --apply",
     "moderation:list": "node scripts/moderation.cjs list",
     "moderation:show": "node scripts/moderation.cjs show",
     "moderation:approve": "node scripts/moderation.cjs approve",

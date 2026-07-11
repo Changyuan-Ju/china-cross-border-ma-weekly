@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/Badge";
 import { SourceLink } from "@/components/SourceLink";
 import { SuggestionButton } from "@/components/SuggestionButton";
-import { announcementTypeLabel, fmtDate, fmtMoney, linkStatusLabel, sourceTypeLabel, stageLabel, validationLabel } from "@/lib/format";
+import { announcementTypeLabel, fmtDate, fmtMoney, sourceMetaParts, stageLabel, validationLabel } from "@/lib/format";
 import { readStore } from "@/lib/store";
 import { dedupeTags } from "@/lib/tag-utils";
 import type { Deal, DealEventItem } from "@/lib/types";
@@ -102,9 +102,9 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
                 <div key={`${source.title}-${source.published_at ?? ""}`} className="border-b border-line pb-3 last:border-b-0 last:pb-0">
                   <div className="font-medium text-ink">{source.title}</div>
                   <div className="mt-1 text-xs text-subtle">
-                    {source.publisher ?? "Wind公告库"} · {source.published_at ? fmtDate(source.published_at) : "日期未披露"} · {sourceTypeLabel(source.source_type ?? "wind_record")} · {linkStatusLabel(source.link_status ?? "valid")}
+                    {sourceMetaParts(source).join(" · ")}
                   </div>
-                  <div className="mt-2"><SourceLink source={source} /></div>
+                  <div className="mt-2"><SourceLink source={source} hideUnavailable /></div>
                 </div>
               ))}
             </div>

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { dedupeTags } from "./tag-utils";
+import { findTextCorruption } from "./text-quality";
 
 const sourceSchema = z.object({
   title: z.string().min(1),
@@ -99,4 +100,12 @@ export const weeklyPayloadSchema = z.object({
     })
   ),
   errors: z.array(z.string())
+}).superRefine((payload, context) => {
+  for (const finding of findTextCorruption(payload)) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: finding.path,
+      message: "Text contains the Unicode replacement character (�); fix source encoding before ingestion."
+    });
+  }
 });

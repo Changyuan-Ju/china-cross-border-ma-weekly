@@ -59,4 +59,48 @@ describe("weekly payload schema", () => {
     expect(parsed.deals[0].target_profile?.name).toBe("测试标的");
     expect(parsed.deals[0].is_manual_supplement).toBe(true);
   });
+
+  it("rejects Unicode replacement characters before ingestion", () => {
+    const result = weeklyPayloadSchema.safeParse({
+      issue_start_date: "2026-07-04",
+      issue_end_date: "2026-07-10",
+      run_started_at: "2026-07-10T14:00:00.000Z",
+      run_completed_at: "2026-07-10T14:08:00.000Z",
+      candidate_count: 1,
+      included_count: 1,
+      excluded_count: 0,
+      review_required_count: 0,
+      deals: [{
+        canonical_deal_id: "deal-corrupt-text",
+        deal_fingerprint: "deal-corrupt-text",
+        buyer_name_cn: "测试买方",
+        seller_names: ["Kaja M�hling"],
+        target_name_cn: "测试标的",
+        deal_direction: "中资收购境外资产",
+        transaction_type: "股权收购",
+        payment_methods: ["现金"],
+        announcement_date: "2026-07-10",
+        announcement_type: "initial",
+        transaction_stage: "agreement_signed",
+        current_status: "ongoing",
+        approvals_required: [],
+        closing_conditions: [],
+        strategic_rationale: [],
+        article_title: "测试交易",
+        article_body: "测试正文",
+        information_gaps: [],
+        visible_tags: [],
+        importance_score: 50,
+        importance_score_breakdown: {},
+        sources: [{ title: "测试公告", url: "", link_status: "not_publicly_available" }],
+        evidence: {},
+        validation_status: "valid"
+      }],
+      excluded_items: [],
+      errors: []
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) expect(result.error.issues[0].path).toEqual(["deals", 0, "seller_names", 0]);
+  });
 });
