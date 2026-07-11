@@ -53,6 +53,9 @@ The Prisma schema includes:
 - `IngestionRun`
 - `ExcludedCandidate`
 - `ReviewItem`
+- `ManualSubmission`
+- `ModerationRequest`
+- `StatusChangeLog`
 
 Generate and migrate:
 
@@ -96,6 +99,29 @@ Authorization: Bearer $INGEST_API_TOKEN
 ```
 
 The endpoint validates the JSON schema and writes idempotently by deal id, deal fingerprint, and source fingerprint.
+
+## Feedback processing
+
+Public submissions and correction suggestions are stored in PostgreSQL and processed by the existing Friday 22:00 automation before the normal weekly collection starts.
+
+```bash
+npm run feedback:list
+npm run feedback:resolve-moderation -- --id <request-id> --decision approve --note "<evidence-based note>"
+npm run feedback:resolve-submission -- --id <submission-id> --decision approved --note "<evidence-based note>" --deal-id <deal-id> --event-id <event-id>
+```
+
+The resolver is idempotent and records status changes. A manual submission may only be marked `approved` after its matched or newly ingested deal exists. Ambiguous items use `needs_manual_review` instead of being forced into a decision.
+
+## Public announcement sources
+
+Stored source URLs follow this order: exchange or regulator original, company investor-relations original, then a trustworthy full-announcement mirror. Search-result and announcement-list URLs are discovery aids only and are rejected as stored sources.
+
+```bash
+npm run sources:audit
+npm run sources:enrich -- --mapping data/public-source-backfill-2026-07-11.json
+```
+
+When no exact public original or full-text mirror can be verified, the source remains `Wind公告库` with `link_status=not_publicly_available`; no URL is invented.
 
 ## Tests
 

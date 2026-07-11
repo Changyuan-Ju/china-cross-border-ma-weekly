@@ -16,6 +16,7 @@ export function validateSources(sources: DealSource[]) {
     try {
       const url = new URL(source.url);
       if (!["http:", "https:"].includes(url.protocol)) errors.push(`unsupported_source_protocol:${source.url}`);
+      if (isSearchResultSource(source.url)) errors.push(`search_result_source_not_allowed:${source.url}`);
     } catch {
       errors.push(`invalid_source_url:${source.url}`);
     }
@@ -30,11 +31,13 @@ export const officialSourcePriority = [
   "company_ir_pdf",
   "regulator_pdf",
   "cninfo_direct",
+  "company_ir_page",
+  "public_announcement_mirror",
   "wind_record"
 ];
 
 export function isSearchResultSource(url: string) {
-  return /fulltextSearch|search|query/i.test(url);
+  return /(?:google\.|baidu\.|bing\.|fulltextSearch|\/search(?:[/?#]|$)|[?&](?:q|query|keyword)=)/i.test(url);
 }
 
 export function publicSourceLabel(source: DealSource) {

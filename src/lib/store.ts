@@ -10,6 +10,22 @@ import { dedupeTags } from "./tag-utils";
 
 const DATA_PATH = path.resolve(process.cwd(), process.env.LOCAL_DATA_PATH ?? "data/store.json");
 
+function dedupeBy<T>(items: T[], key: (item: T) => string) {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    const value = key(item);
+    if (seen.has(value)) return false;
+    seen.add(value);
+    return true;
+  });
+}
+
+function normalizedSourceKey(source: { url: string; title: string; publishedAt?: Date | null }) {
+  const url = source.url.trim().toLowerCase();
+  if (url) return `url:${url}`;
+  return `meta:${source.title.replace(/\s+/g, "").toLowerCase()}|${source.publishedAt?.toISOString().slice(0, 10) ?? ""}`;
+}
+
 const emptyStore: Store = {
   site: {
     name: "Cross-border M&A Weekly",
@@ -179,7 +195,13 @@ async function readDatabaseStore(): Promise<Store> {
       review_required_count: issue.reviewRequiredCount,
       published_at: issue.publishedAt?.toISOString() ?? issue.updatedAt.toISOString()
     })),
-    deals: (deals as DealWithSources[]).map((deal) => ({
+    deals: (deals as DealWithSources[]).map((deal) => {
+      const uniqueSources = dedupeBy(deal.sources, normalizedSourceKey);
+      const uniqueEvents = dedupeBy(deal.events, (event) => {
+        const primary = event.sourceLinks.find((source) => source.isPrimary) ?? event.sourceLinks[0];
+        return primary?.url ? `url:${primary.url.trim().toLowerCase()}` : `${event.announcementDate.toISOString().slice(0, 10)}|${event.title.replace(/\s+/g, "").toLowerCase()}`;
+      });
+      return {
       canonical_deal_id: deal.id,
       deal_fingerprint: deal.fingerprint,
       buyer_name_cn: deal.buyerNameCn,
@@ -227,7 +249,7 @@ async function readDatabaseStore(): Promise<Store> {
       visible_tags: dedupeTags(deal.visibleTags),
       importance_score: deal.importanceScore,
       importance_score_breakdown: deal.importanceBreakdown as Record<string, number>,
-      sources: deal.sources.map((source) => ({
+      sources: uniqueSources.map((source) => ({
         title: source.title,
         url: source.url,
         publisher: source.publisher ?? undefined,
@@ -241,7 +263,7 @@ async function readDatabaseStore(): Promise<Store> {
       evidence: {},
       validation_status: deal.validationStatus as Deal["validation_status"],
       manual_priority: deal.manualPriority,
-      events: deal.events.map((event) => ({
+      events: uniqueEvents.map((event) => ({
         id: event.id,
         announcement_date: event.announcementDate.toISOString().slice(0, 10),
         announcement_type: event.announcementType,
@@ -262,7 +284,8 @@ async function readDatabaseStore(): Promise<Store> {
           wind_record_id: source.windRecordId ?? undefined
         }))
       }))
-    })),
+      };
+    }),
     runs: []
   };
 }

@@ -24,6 +24,12 @@
     "submissions:show": "node scripts/submissions.cjs show",
     "submissions:approve": "node scripts/submissions.cjs approve",
     "submissions:reject": "node scripts/submissions.cjs reject",
+    "feedback:list": "node scripts/process-feedback.cjs list",
+    "feedback:resolve-moderation": "node scripts/process-feedback.cjs resolve-moderation",
+    "feedback:resolve-submission": "node scripts/process-feedback.cjs resolve-submission",
+    "sources:audit": "node scripts/enrich-public-sources.cjs audit",
+    "sources:validate": "node scripts/enrich-public-sources.cjs validate",
+    "sources:enrich": "node scripts/enrich-public-sources.cjs apply",
     "sources:repair": "node scripts/repair-source-links.cjs"
   },
   "dependencies": {

@@ -34,7 +34,7 @@ test("weekly page shows candidate section and suggestion popover", async ({ page
   await expect(page.getByText("已排除（9）")).toBeVisible();
   await page.getByRole("button", { name: "提出调整建议" }).first().click();
   await expect(page.getByLabel("建议操作")).toBeVisible();
-  await expect(page.getByLabel("建议理由")).toBeVisible();
+  await expect(page.getByLabel("判断依据")).toBeVisible();
 });
 
 test("deal detail and archive use the editorial structure", async ({ page }) => {
@@ -43,5 +43,5 @@ test("deal detail and archive use the editorial structure", async ({ page }) => 
   await expect(page.getByRole("heading", { name: "核心交易数据" })).toBeVisible();
   await page.goto("/archive");
   await expect(page.getByText("ARCHIVE")).toBeVisible();
-  await expect(page.getByText("查看周报")).toBeVisible();
+  await expect(page.getByText("查看周报").first()).toBeVisible();
 });
