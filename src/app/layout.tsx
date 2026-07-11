@@ -20,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" className="group inline-flex flex-col">
               <div className="text-[11px] font-bold tracking-[0.22em] text-logo">CROSS-BORDER M&amp;A</div>
               <div className="mt-0.5 text-xl font-semibold tracking-normal text-ink">中资企业跨境并购周报</div>
+              <div className="mt-0.5 text-[11px] tracking-[0.08em] text-subtle">华泰联合证券国际业务部出品</div>
             </Link>
             <SiteNav />
           </div>

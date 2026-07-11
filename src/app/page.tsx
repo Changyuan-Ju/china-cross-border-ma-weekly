@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Archive, Database, FileText, Globe2 } from "lucide-react";
+import { FileText, Globe2 } from "lucide-react";
 import { DealCard } from "@/components/DealCard";
 import { fmtIssueRange, fmtIssueSummary } from "@/lib/format";
 import { rankDeals, topDeals } from "@/lib/ranking";
@@ -20,7 +19,7 @@ export default async function HomePage() {
   return (
     <div className="shell py-8">
       <section className="border-b border-line pb-8">
-        <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end">
+        <div>
           <div>
             <div className="text-xs font-bold tracking-[0.18em] text-gold">最新周报</div>
             <h1 className="mt-3 max-w-4xl text-4xl font-semibold leading-tight tracking-normal text-ink md:text-[42px]">{latest ? fmtIssueRange(latest.start_date, latest.end_date) : "暂无已发布周报"}</h1>
@@ -31,19 +30,6 @@ export default async function HomePage() {
               <FileText size={16} className="text-gold" />
               <span>数据更新：{latest?.published_at ? latest.published_at.slice(0, 10) : "未发布"}</span>
             </div>
-          </div>
-          <div className="flex flex-wrap gap-3 lg:justify-end">
-            {latest ? (
-              <Link href={`/weekly/${latest.id}`} className="focus-ring inline-flex items-center gap-2 border border-ink bg-ink px-4 py-2 text-sm font-semibold text-white hover:border-gold">
-                <FileText size={16} /> 查看完整周报
-              </Link>
-            ) : null}
-            <Link href="/deals" className="focus-ring inline-flex items-center gap-2 border border-line bg-surface px-4 py-2 text-sm font-semibold text-ink hover:border-gold">
-              <Database size={16} /> 交易数据库
-            </Link>
-            <Link href="/archive" className="focus-ring inline-flex items-center gap-2 border border-line bg-surface px-4 py-2 text-sm text-ink hover:border-gold">
-              <Archive size={16} /> 历史周报
-            </Link>
           </div>
         </div>
         <div className="mt-8 grid grid-cols-2 border-y border-line bg-surface md:grid-cols-4">
