@@ -9,7 +9,3 @@ export function rankDeals(deals: Deal[]) {
     return new Date(b.announcement_date).getTime() - new Date(a.announcement_date).getTime();
   });
 }
-
-export function topDeals(deals: Deal[]) {
-  return rankDeals(deals.filter((deal) => deal.validation_status === "valid")).slice(0, 3);
-}

@@ -1,7 +1,7 @@
 import { FileText, Globe2 } from "lucide-react";
 import { DealCard } from "@/components/DealCard";
 import { fmtIssueRange, fmtIssueSummary } from "@/lib/format";
-import { rankDeals, topDeals } from "@/lib/ranking";
+import { rankDeals } from "@/lib/ranking";
 import { readStore } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
@@ -10,8 +10,7 @@ export default async function HomePage() {
   const store = await readStore();
   const latest = store.issues[0];
   const issueDeals = latest ? store.deals.filter((deal) => latest.deal_ids.includes(deal.canonical_deal_id)) : [];
-  const featured = topDeals(issueDeals);
-  const others = rankDeals(issueDeals).filter((deal) => !featured.some((item) => item.canonical_deal_id === deal.canonical_deal_id));
+  const rankedDeals = rankDeals(issueDeals);
   const countries = new Set(issueDeals.map((deal) => deal.target_country_or_region).filter(Boolean));
   const initialCount = issueDeals.filter((deal) => (deal.events ?? []).some((event) => event.announcement_type === "initial") || deal.announcement_type === "initial").length;
   const completedCount = issueDeals.filter((deal) => deal.transaction_stage === "completed").length;
@@ -43,16 +42,11 @@ export default async function HomePage() {
       <section className="py-8">
         <div className="mb-4 flex items-center gap-2">
           <Globe2 size={18} className="text-gold" />
-          <h2 className="text-2xl font-semibold text-ink">本周重点交易</h2>
+          <h2 className="text-2xl font-semibold text-ink">本周交易</h2>
         </div>
         <div className="grid gap-4">
-          {featured.length ? featured.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} featured variant="featured" />) : <EmptyState />}
+          {rankedDeals.length ? rankedDeals.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} variant="standard" />) : <EmptyState />}
         </div>
-      </section>
-
-      <section className="pb-10">
-        <h2 className="mb-4 text-2xl font-semibold text-ink">其他交易</h2>
-        <div className="grid gap-3">{others.length ? others.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} variant="compact" />) : <EmptyState />}</div>
       </section>
     </div>
   );

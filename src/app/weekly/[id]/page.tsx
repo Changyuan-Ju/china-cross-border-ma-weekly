@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { CandidateSection } from "@/components/CandidateSection";
 import { DealCard } from "@/components/DealCard";
 import { fmtIssueRange, fmtIssueSummary, fmtMoney } from "@/lib/format";
-import { rankDeals, topDeals } from "@/lib/ranking";
+import { rankDeals } from "@/lib/ranking";
 import { readStore } from "@/lib/store";
 import { getIssueCandidates } from "@/lib/candidates";
 import type { Deal } from "@/lib/types";
@@ -14,9 +14,7 @@ export default async function WeeklyPage({ params }: { params: Promise<{ id: str
   if (!issue) notFound();
 
   const deals = store.deals.filter((deal) => issue.deal_ids.includes(deal.canonical_deal_id));
-  const featured = topDeals(deals);
-  const featuredIds = new Set(featured.map((deal) => deal.canonical_deal_id));
-  const rest = rankDeals(deals).filter((deal) => !featuredIds.has(deal.canonical_deal_id));
+  const rankedDeals = rankDeals(deals);
   const candidates = await getIssueCandidates(id);
   const countries = uniqueText(deals.map((deal) => deal.target_country_or_region)).join("、") || "未披露";
   const industries = uniqueText(deals.map((deal) => deal.target_industry)).slice(0, 3).join("、") || "未披露";
@@ -56,14 +54,9 @@ export default async function WeeklyPage({ params }: { params: Promise<{ id: str
         <BriefMeta label="披露对价" value={considerationSummary} />
       </div>
 
-      <SectionTitle number="02" title="重点交易" />
+      <SectionTitle number="02" title="本期交易" />
       <div className="mt-4 grid gap-4">
-        {featured.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} featured variant="featured" />)}
-      </div>
-
-      <SectionTitle number="03" title="其他交易" />
-      <div className="mt-4 grid gap-3">
-        {rest.length ? rest.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} variant="compact" />) : <div className="border border-line bg-surface p-5 text-sm text-muted">本期其余正式交易已全部列入重点交易。</div>}
+        {rankedDeals.map((deal) => <DealCard key={deal.canonical_deal_id} deal={deal} variant="standard" />)}
       </div>
 
       <CandidateSection candidates={candidates} />

@@ -3,7 +3,8 @@ import { expect, test } from "@playwright/test";
 test("home page loads", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("中资企业跨境并购周报").first()).toBeVisible();
-  await expect(page.getByText("本周重点交易")).toBeVisible();
+  await expect(page.getByText("本周交易")).toBeVisible();
+  await expect(page.getByText("其他交易")).toHaveCount(0);
 });
 
 test("deals search controls are usable", async ({ page }) => {
