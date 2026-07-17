@@ -1,4 +1,4 @@
-export type ValidationStatus = "valid" | "review_required" | "rejected";
+export type ValidationStatus = "valid" | "rejected";
 
 export type DealSource = {
   title: string;
@@ -102,7 +102,7 @@ export type ExcludedItem = {
 export type CandidateItem = {
   id: string;
   issue_id: string;
-  status: "review_required" | "excluded";
+  status: "excluded";
   candidate_title: string;
   buyer_name?: string | null;
   buyer_ticker?: string | null;

@@ -5,7 +5,6 @@ import { CheckCircle2, X } from "lucide-react";
 
 const labels = {
   include: "建议纳入",
-  review_required: "建议转为待复核",
   exclude: "建议排除"
 };
 
@@ -31,7 +30,7 @@ export function SuggestionButton({ targetType, targetId, targetTitle }: { target
         body: JSON.stringify({ targetType, targetId, requestedAction, reason, website: "" })
       });
       if (response.ok) {
-        setMessage("建议已进入周五自动核验队列；证据充分时会直接更新，存在歧义时将保留待复核。");
+        setMessage("建议已进入周五自动核验队列；系统将核对底层披露并自动决定纳入或排除。");
         setReason("");
       } else if (response.status === 429) {
         setError("提交较频繁，请稍后再试。");

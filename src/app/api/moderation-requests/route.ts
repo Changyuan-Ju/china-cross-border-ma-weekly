@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { cleanText, isRateLimited, requestIp, stableHash } from "@/lib/public-input";
 
-const actions = new Set(["include", "review_required", "exclude"]);
-const targets = new Set(["deal", "review_item", "excluded_candidate", "manual_submission"]);
+const actions = new Set(["include", "exclude"]);
+const targets = new Set(["deal", "excluded_candidate", "manual_submission"]);
 
 export async function POST(request: Request) {
   const ip = requestIp(request);

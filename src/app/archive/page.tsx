@@ -29,7 +29,7 @@ export default async function ArchivePage() {
                         <div className="text-lg font-semibold text-ink">{fmtIssueRange(issue.start_date, issue.end_date)}</div>
                         {index === 0 ? <span className="border border-gold px-2 py-0.5 text-xs font-semibold text-ink">最新</span> : null}
                       </div>
-                      <div className="mt-2 text-sm text-muted">纳入 {issue.included_count} 笔，排除 {issue.excluded_count} 笔，复核 {issue.review_required_count} 笔</div>
+                      <div className="mt-2 text-sm text-muted">纳入 {issue.included_count} 笔，排除 {issue.excluded_count} 笔</div>
                     </div>
                     <div className="text-sm text-muted">发布时间：{issue.published_at.slice(0, 10)}</div>
                     <div className="text-sm font-semibold text-ink md:text-right">查看周报</div>

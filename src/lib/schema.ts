@@ -67,7 +67,7 @@ const dealSchema = z.object({
   importance_score_breakdown: z.record(z.number()),
   sources: z.array(sourceSchema).min(1),
   evidence: z.record(z.string()).default({}),
-  validation_status: z.enum(["valid", "review_required", "rejected"]),
+  validation_status: z.literal("valid"),
   manual_priority: z.number().int().nullable().optional()
 });
 
@@ -79,7 +79,7 @@ export const weeklyPayloadSchema = z.object({
   candidate_count: z.number().int().nonnegative(),
   included_count: z.number().int().nonnegative(),
   excluded_count: z.number().int().nonnegative(),
-  review_required_count: z.number().int().nonnegative(),
+  review_required_count: z.literal(0),
   deals: z.array(dealSchema),
   excluded_items: z.array(
     z.object({
@@ -101,6 +101,15 @@ export const weeklyPayloadSchema = z.object({
   ),
   errors: z.array(z.string())
 }).superRefine((payload, context) => {
+  if (payload.included_count !== payload.deals.length) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["included_count"], message: "included_count must equal deals.length." });
+  }
+  if (payload.excluded_count !== payload.excluded_items.length) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["excluded_count"], message: "excluded_count must equal excluded_items.length." });
+  }
+  if (payload.candidate_count !== payload.included_count + payload.excluded_count) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["candidate_count"], message: "candidate_count must equal included_count + excluded_count." });
+  }
   for (const finding of findTextCorruption(payload)) {
     context.addIssue({
       code: z.ZodIssueCode.custom,

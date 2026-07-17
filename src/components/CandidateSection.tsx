@@ -4,18 +4,15 @@ import { fmtDate } from "@/lib/format";
 import { SuggestionButton } from "./SuggestionButton";
 
 export function CandidateSection({ candidates }: { candidates: CandidateItem[] }) {
-  const reviewItems = candidates.filter((item) => item.status === "review_required");
-  const excludedItems = candidates.filter((item) => item.status === "excluded");
   if (!candidates.length) return null;
   return (
     <section className="mt-10 border-t border-line pt-8">
       <div className="flex items-center gap-3">
-        <span className="tabular text-sm font-semibold text-gold">04</span>
+        <span className="tabular text-sm font-semibold text-gold">03</span>
         <h2 className="text-2xl font-semibold text-ink">本期其他候选交易</h2>
       </div>
-      <p className="mt-3 text-sm leading-7 text-muted">以下项目尚未纳入正式交易数据库，仅供参考，不代表网站确认其符合跨境并购筛选标准。</p>
-      <CandidateGroup title={`待复核（${reviewItems.length}）`} items={reviewItems} targetType="review_item" />
-      <CandidateGroup title={`已排除（${excludedItems.length}）`} items={excludedItems} targetType="excluded_candidate" />
+      <p className="mt-3 text-sm leading-7 text-muted">以下项目已由自动化系统按统一口径判定为不符合纳入标准，不计入正式交易统计。</p>
+      <CandidateGroup title={`已排除（${candidates.length}）`} items={candidates} targetType="excluded_candidate" />
     </section>
   );
 }
@@ -48,7 +45,7 @@ function CandidateCard({ item, targetType }: { item: CandidateItem; targetType: 
         <Metric label="当前状态" value={item.current_status} />
       </div>
       <div className="mt-3 grid gap-3 text-sm md:grid-cols-2">
-        <Metric label={item.status === "review_required" ? "待复核原因" : "排除原因"} value={item.reason} />
+        <Metric label="排除原因" value={item.reason} />
         <Metric label="信息缺口" value={item.information_gaps.length ? item.information_gaps.join("；") : "未列示"} />
       </div>
       <div className="mt-4 flex flex-wrap gap-3">

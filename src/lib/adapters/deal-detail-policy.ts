@@ -46,5 +46,6 @@ export const detailExtractionRules = [
   "Extract board, shareholder, ODI, antitrust, sector regulator and closing-condition status separately.",
   "Attach field-level evidence and source metadata; if the public URL is unavailable, mark link_status as not_publicly_available instead of fabricating a URL.",
   "When a field is material but not disclosed, add it to information_gaps rather than leaving the reader to infer completeness.",
-  "Set review_required when the target asset location, buyer identity, transaction perimeter or duplicate matching confidence is uncertain."
+  "Make a binary decision: include only when buyer identity, cross-border substance, transaction perimeter and event matching are sufficiently evidenced; otherwise exclude with a precise reason and information gaps.",
+  "A historical Deal is not a duplicate when the current window contains a new signing, approval, financing-condition, terms-change, completion, delisting or termination event. Reuse its canonical_deal_id, update the Deal and append the new event to the existing timeline."
 ] as const;

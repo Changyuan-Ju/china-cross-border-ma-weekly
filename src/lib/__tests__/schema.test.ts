@@ -103,4 +103,22 @@ describe("weekly payload schema", () => {
     expect(result.success).toBe(false);
     if (!result.success) expect(result.error.issues[0].path).toEqual(["deals", 0, "seller_names", 0]);
   });
+
+  it("rejects review queues and inconsistent binary counts", () => {
+    const result = weeklyPayloadSchema.safeParse({
+      issue_start_date: "2026-07-11",
+      issue_end_date: "2026-07-17",
+      run_started_at: "2026-07-17T14:00:00.000Z",
+      run_completed_at: "2026-07-17T14:08:00.000Z",
+      candidate_count: 1,
+      included_count: 0,
+      excluded_count: 0,
+      review_required_count: 1,
+      deals: [],
+      excluded_items: [],
+      errors: []
+    });
+
+    expect(result.success).toBe(false);
+  });
 });

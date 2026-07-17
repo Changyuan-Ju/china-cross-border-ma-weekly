@@ -6,7 +6,7 @@ import { CheckCircle2, FileSearch, Send, ShieldCheck } from "lucide-react";
 const steps = [
   { icon: Send, title: "提交线索", text: "填写交易标题；如有公开公告，可一并粘贴链接。" },
   { icon: FileSearch, title: "自动核验", text: "每周五 22:00 核对公告原文、交易边界与重复记录。" },
-  { icon: ShieldCheck, title: "规范入库", text: "符合口径的交易补齐字段后发布；证据不足的保留待复核。" }
+  { icon: ShieldCheck, title: "自动判定", text: "系统核对底层披露后自动决定纳入或排除，不设置待复核队列。" }
 ];
 
 export default function SubmitPage() {

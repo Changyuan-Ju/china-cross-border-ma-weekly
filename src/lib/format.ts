@@ -17,14 +17,13 @@ export function fmtMoney(amount?: number | null, currency?: string | null, text?
   return `${currency} ${amount.toLocaleString("zh-CN")}`;
 }
 
-export function buildIssueSummary(includedCount: number, reviewRequiredCount: number) {
-  const reviewText = reviewRequiredCount ? `，另有 ${reviewRequiredCount} 笔待复核` : "";
-  return `本期正式纳入 ${includedCount} 笔中资企业跨境并购交易${reviewText}。`;
+export function buildIssueSummary(includedCount: number) {
+  return `本期正式纳入 ${includedCount} 笔中资企业跨境并购交易，其余候选已按统一口径自动判定并排除。`;
 }
 
-export function fmtIssueSummary(summary: string | null | undefined, includedCount: number, reviewRequiredCount: number) {
-  if (summary && !/^Included \d+ deal\(s\);/i.test(summary.trim())) return summary;
-  return buildIssueSummary(includedCount, reviewRequiredCount);
+export function fmtIssueSummary(summary: string | null | undefined, includedCount: number) {
+  if (summary && !/^Included \d+ deal\(s\);/i.test(summary.trim()) && !summary.includes("待复核")) return summary;
+  return buildIssueSummary(includedCount);
 }
 
 export function announcementTypeLabel(type: string) {
@@ -32,7 +31,7 @@ export function announcementTypeLabel(type: string) {
 }
 
 export function validationLabel(status: string) {
-  const labels: Record<string, string> = { valid: "已核验", review_required: "待复核", rejected: "已排除" };
+  const labels: Record<string, string> = { valid: "已核验", rejected: "已排除" };
   return labels[status] ?? status;
 }
 

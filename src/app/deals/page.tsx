@@ -17,7 +17,7 @@ export default async function DealsPage({ searchParams }: { searchParams: Promis
   const page = Math.max(1, Number(params.page ?? "1"));
   const pageSize = 10;
   const candidates = status === "已纳入" ? [] : await getAllCandidates();
-  const visibleCandidates = candidates.filter((item) => (status === "待复核" ? item.status === "review_required" : item.status === "excluded"));
+  const visibleCandidates = status === "已排除" ? candidates : [];
   const filteredDeals = rankDeals(
     store.deals.filter((deal) => {
       const haystack = [
@@ -62,7 +62,7 @@ export default async function DealsPage({ searchParams }: { searchParams: Promis
       <div className="mb-6">
         <div className="text-xs font-bold tracking-[0.18em] text-gold">DEAL DATABASE</div>
         <h1 className="mt-2 text-3xl font-semibold text-ink md:text-4xl">交易数据库</h1>
-        <p className="mt-3 text-sm leading-7 text-muted">按公司、证券代码、标的、国家/地区、行业、阶段和状态筛选。待复核及已排除项目单独展示，不计入正式交易统计。</p>
+        <p className="mt-3 text-sm leading-7 text-muted">按公司、证券代码、标的、国家/地区、行业、阶段和状态筛选。系统对候选进行自动二元判定；已排除项目单独展示，不计入正式交易统计。</p>
       </div>
       <Suspense>
         <Filters countries={countries} industries={industries} stages={stages} resultCount={resultCount} />

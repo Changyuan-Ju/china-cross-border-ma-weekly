@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   const item = await prisma.manualSubmission.upsert({
     where: { submissionHash },
     update: {},
-    create: { id: randomUUID(), title, sourceUrl, status: "review_required", submissionHash },
+    create: { id: randomUUID(), title, sourceUrl, status: "submitted", submissionHash },
     select: { id: true, status: true }
   });
   invalidateCandidateDataCache();

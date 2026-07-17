@@ -18,7 +18,6 @@ export default async function RunsPage() {
               <Th>候选</Th>
               <Th>纳入</Th>
               <Th>排除</Th>
-              <Th>复核</Th>
               <Th>状态</Th>
               <Th>错误</Th>
             </tr>
@@ -31,7 +30,6 @@ export default async function RunsPage() {
                 <Td>{run.candidate_count}</Td>
                 <Td>{run.included_count}</Td>
                 <Td>{run.excluded_count}</Td>
-                <Td>{run.review_required_count}</Td>
                 <Td>{run.status}</Td>
                 <Td>{run.errors.join("；") || "无"}</Td>
               </tr>

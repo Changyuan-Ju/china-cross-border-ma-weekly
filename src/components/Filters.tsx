@@ -49,7 +49,6 @@ export function Filters({ countries, industries, stages, resultCount }: { countr
           value={params.get("status") ?? "已纳入"}
           options={[
             "已纳入",
-            "待复核",
             "已排除"
           ]}
           onChange={(value) => update("status", value)}

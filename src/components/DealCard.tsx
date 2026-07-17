@@ -4,11 +4,11 @@ import type { Deal } from "@/lib/types";
 import { fmtDate, fmtMoney, stageLabel } from "@/lib/format";
 import { dedupeTags } from "@/lib/tag-utils";
 import { Badge } from "./Badge";
-import { SourceLink } from "./SourceLink";
+import { preferredSource, SourceLink } from "./SourceLink";
 import { SuggestionButton } from "./SuggestionButton";
 
 export function DealCard({ deal, featured = false, variant }: { deal: Deal; featured?: boolean; variant?: "featured" | "standard" | "compact" }) {
-  const source = deal.sources[0];
+  const source = preferredSource(deal.sources);
   const mode = variant ?? (featured ? "featured" : "standard");
   const compact = mode === "compact";
   const stageTone = deal.transaction_stage === "completed" ? "green" : deal.transaction_stage === "terminated" ? "red" : featured ? "gold" : "neutral";

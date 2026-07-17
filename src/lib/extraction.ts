@@ -40,8 +40,7 @@ export function generateTags(deal: Pick<Deal, "deal_direction" | "transaction_ty
     deal.deal_direction,
     deal.transaction_type,
     ...deal.payment_methods.map(paymentMethodTag),
-    deal.obtains_control ? "取得控制权" : null,
-    deal.validation_status === "review_required" ? "需要复核" : null
+    deal.obtains_control ? "取得控制权" : null
   ]);
 }
 

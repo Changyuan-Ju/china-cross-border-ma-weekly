@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/Badge";
-import { SourceLink } from "@/components/SourceLink";
+import { SourceLink, sourcesForButtons } from "@/components/SourceLink";
 import { SuggestionButton } from "@/components/SuggestionButton";
 import { announcementTypeLabel, fmtDate, fmtMoney, sourceMetaParts, stageLabel, validationLabel } from "@/lib/format";
 import { readStore } from "@/lib/store";
@@ -86,7 +86,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
                   <div className="mt-1 text-sm text-muted">{stageLabel(event.transaction_stage)} · {announcementTypeLabel(event.announcement_type)}</div>
                   {event.body ? <p className="mt-2 text-sm leading-7 text-muted">{event.body}</p> : null}
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {(event.sources?.length ? event.sources : deal.sources).map((source) => (
+                    {sourcesForButtons(event.sources?.length ? event.sources : deal.sources).map((source) => (
                       <SourceLink key={`${event.id}-${source.title}-${source.published_at ?? ""}`} source={source} />
                     ))}
                   </div>
@@ -132,7 +132,7 @@ export default async function DealDetailPage({ params }: { params: Promise<{ id:
           </Panel>
           <div className="border border-line bg-surface p-5">
             <h2 className="text-xl font-semibold text-ink">调整建议</h2>
-            <p className="mt-2 text-sm leading-6 text-muted">公众建议不会直接改变交易状态，需管理员复核。</p>
+            <p className="mt-2 text-sm leading-6 text-muted">公众建议不会直接改变交易状态；系统将在下一轮自动核验底层披露并作出二元判定。</p>
             <div className="mt-4"><SuggestionButton targetType="deal" targetId={deal.canonical_deal_id} targetTitle={deal.article_title} /></div>
           </div>
         </aside>

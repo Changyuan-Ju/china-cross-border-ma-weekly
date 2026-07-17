@@ -112,11 +112,9 @@ export async function writeStore(store: Store) {
 
 export async function upsertWeeklyPayload(payload: WeeklyPayload) {
   const store = await readStore();
-  const validDeals = payload.deals.filter((deal) => deal.validation_status === "valid");
-  const reviewDeals = payload.deals.filter((deal) => deal.validation_status === "review_required");
-  const acceptedDeals = [...validDeals, ...reviewDeals];
+  const validDeals = payload.deals;
 
-  for (const deal of acceptedDeals) {
+  for (const deal of validDeals) {
     const existingIndex = store.deals.findIndex(
       (current) => current.deal_fingerprint === deal.deal_fingerprint || current.canonical_deal_id === deal.canonical_deal_id
     );
@@ -130,12 +128,12 @@ export async function upsertWeeklyPayload(payload: WeeklyPayload) {
     start_date: payload.issue_start_date,
     end_date: payload.issue_end_date,
     title: `${payload.issue_start_date} to ${payload.issue_end_date} Cross-border M&A Weekly`,
-    summary: `Included ${payload.included_count} deal(s); ${payload.review_required_count} item(s) require review.`,
+    summary: `本期正式纳入 ${payload.included_count} 笔中资企业跨境并购交易，其余候选已按统一口径自动判定并排除。`,
     deal_ids: rankDeals(validDeals).map((deal) => deal.canonical_deal_id),
     candidate_count: payload.candidate_count,
     included_count: payload.included_count,
     excluded_count: payload.excluded_count,
-    review_required_count: payload.review_required_count,
+    review_required_count: 0,
     published_at: payload.run_completed_at
   };
 
@@ -148,7 +146,7 @@ export async function upsertWeeklyPayload(payload: WeeklyPayload) {
   store.issues.sort((a, b) => new Date(b.end_date).getTime() - new Date(a.end_date).getTime());
   store.deals = rankDeals(store.deals);
   await writeStore(store);
-  return { issueId, accepted: acceptedDeals.length };
+  return { issueId, accepted: validDeals.length };
 }
 
 function mergeDeal(previous: Deal, next: Deal): Deal {

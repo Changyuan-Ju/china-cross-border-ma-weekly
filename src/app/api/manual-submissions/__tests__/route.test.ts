@@ -11,7 +11,7 @@ vi.mock("@/lib/db", () => ({
 describe("manual submission API", () => {
   beforeEach(() => {
     upsert.mockReset();
-    upsert.mockResolvedValue({ id: "submission-1", status: "review_required" });
+    upsert.mockResolvedValue({ id: "submission-1", status: "submitted" });
   });
 
   it("accepts a simple public deal lead", async () => {
@@ -20,7 +20,7 @@ describe("manual submission API", () => {
     expect(response.status).toBe(200);
     expect(upsert).toHaveBeenCalledOnce();
     const body = await response.json();
-    expect(body.status).toBe("review_required");
+    expect(body.status).toBe("submitted");
   });
 
   it("rejects invalid urls", async () => {
