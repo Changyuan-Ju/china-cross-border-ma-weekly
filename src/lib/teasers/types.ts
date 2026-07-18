@@ -1,0 +1,66 @@
+export type TeaserDocumentView = {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  fileSize: number;
+  sourceType: string;
+  sourceLabel: string | null;
+  originalUrl: string | null;
+  status: string;
+  versionLabel: string | null;
+  documentType: string | null;
+  documentDate: string | null;
+  language: string | null;
+  uploadedAt: string;
+  processedAt: string | null;
+  confidence: number | null;
+  errorMessage: string | null;
+};
+
+export type TeaserOpportunityView = {
+  id: string;
+  projectCode: string | null;
+  title: string;
+  companyName: string | null;
+  country: string | null;
+  region: string | null;
+  industry: string | null;
+  subsector: string | null;
+  businessSummary: string | null;
+  industryOverview: string | null;
+  companyOverview: string | null;
+  productOverview: string | null;
+  revenue: number | null;
+  ebitda: number | null;
+  netProfit: number | null;
+  ebitdaMargin: number | null;
+  revenueGrowth: number | null;
+  ebitdaGrowth: number | null;
+  netProfitGrowth: number | null;
+  currency: string | null;
+  revenueUsd: number | null;
+  ebitdaUsd: number | null;
+  netProfitUsd: number | null;
+  fxRateToUsd: number | null;
+  fxRateDate: string | null;
+  financialYear: string | null;
+  transactionType: string | null;
+  advisor: string | null;
+  advisorContactName: string | null;
+  advisorContactEmail: string | null;
+  advisorContactPhone: string | null;
+  operatingLocations: string[];
+  companyHighlights: string[];
+  processStage: string;
+  confidence: number | null;
+  tags: string[];
+  latestDocumentAt: string;
+  documents: TeaserDocumentView[];
+};
+
+export type TeaserDashboardData = {
+  opportunities: TeaserOpportunityView[];
+  orphanDocuments: TeaserDocumentView[];
+  databaseReady: boolean;
+  generatedAt: string;
+};

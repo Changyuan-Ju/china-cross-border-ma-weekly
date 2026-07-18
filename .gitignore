@@ -14,7 +14,11 @@ design-audit
 data/raw
 data/store.json
 data/test-store.json
+data/teaser-sync-state.json
 *.tsbuildinfo
+
+# Confidential local teaser materials must never enter source control.
+Teaser/
 
 .vercel
 .env*

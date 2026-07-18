@@ -146,3 +146,27 @@ Run the Cross-border M&A Weekly ingest for the last successful run window throug
 ## Validation status
 
 The included sample JSON is simulated test data only. It is not a real Wind collection result.
+
+## Teaser Intelligence Hub
+
+The protected workspace is available at `/teasers`. It keeps teaser files separate from confirmed M&A transactions while allowing multiple document versions to resolve to one opportunity.
+
+Local development account:
+
+- username: `HTLH-IIB-Admin`
+- password: configure `TEASER_ADMIN_PASSWORD` in the local `.env`
+
+Production deliberately has no password fallback. Configure `TEASER_ADMIN_PASSWORD`, `TEASER_AUTH_SECRET`, `TEASER_SYNC_TOKEN`, `BLOB_READ_WRITE_TOKEN`, `DASHSCOPE_API_KEY`, and `DASHSCOPE_BASE_URL` before deployment. Apply the Prisma migration before enabling uploads.
+
+The cloud path stores original files in private Vercel Blob storage and sends a temporary copy to Alibaba Cloud Model Studio's `qwen-doc-turbo` for document parsing and structured extraction. The temporary Model Studio copy is deleted after each processing attempt. Supported inputs include PDF, scanned PDF, Word, PowerPoint, Excel, text, and common image formats.
+
+For the Codex-assisted local workflow, place files in `TEASER_LOCAL_FOLDER`, create a reviewed `structured-manifest.json` in that folder, and push only the locally structured files:
+
+```powershell
+$env:TEASER_LOCAL_FOLDER="D:\Vibe coding for IIB\Teaser"
+$env:TEASER_LOCAL_STRUCTURED_ENDPOINT="https://china-cross-border-ma-weekly.vercel.app/api/teasers/local-structured"
+$env:TEASER_SYNC_TOKEN="replace-with-the-server-token"
+npm run teasers:push-local
+```
+
+The manifest may contain one complete extraction per file or reference another file with `$ref` plus `overrides`. This allows English and bilingual versions of the same project to share one reviewed record and consolidate under the same project code. Cloud uploads continue to use Qwen; local Codex-assisted uploads do not call Qwen again.

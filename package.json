@@ -30,16 +30,21 @@
     "sources:audit": "node scripts/enrich-public-sources.cjs audit",
     "sources:validate": "node scripts/enrich-public-sources.cjs validate",
     "sources:enrich": "node scripts/enrich-public-sources.cjs apply",
-    "sources:repair": "node scripts/repair-source-links.cjs"
+    "sources:repair": "node scripts/repair-source-links.cjs",
+    "teasers:sync": "node scripts/teaser-folder-sync.cjs",
+    "teasers:push-local": "node scripts/teaser-folder-sync.cjs --structured-only",
+    "teasers:watch": "node scripts/teaser-folder-sync.cjs --watch"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
+    "@vercel/blob": "^2.6.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.468.0",
     "next": "^15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "recharts": "^3.9.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {

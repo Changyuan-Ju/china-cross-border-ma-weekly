@@ -5,7 +5,9 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "中资企业跨境并购周报",
-  description: "中资企业跨境并购交易数据库及周报网站"
+  description: "中资企业跨境并购交易数据库及周报网站",
+  authors: [{ name: "Changyuan Ju" }],
+  creator: "Changyuan Ju"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

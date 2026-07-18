@@ -225,3 +225,123 @@ model StatusChangeLog {
   reviewItem          ReviewItem?        @relation(fields: [reviewItemId], references: [id], onDelete: SetNull)
   excludedCandidate   ExcludedCandidate? @relation(fields: [excludedCandidateId], references: [id], onDelete: SetNull)
 }
+
+model TeaserOpportunity {
+  id                 String             @id @default(uuid())
+  projectCode        String?
+  title              String
+  companyName        String?
+  companyNameEn      String?
+  country            String?
+  region             String?
+  industry           String?
+  subsector          String?
+  businessSummary    String?
+  industryOverview   String?
+  companyOverview    String?
+  productOverview    String?
+  revenue            Float?
+  ebitda             Float?
+  netProfit          Float?
+  ebitdaMargin       Float?
+  revenueGrowth      Float?
+  ebitdaGrowth       Float?
+  netProfitGrowth    Float?
+  currency           String?
+  revenueUsd         Float?
+  ebitdaUsd          Float?
+  netProfitUsd       Float?
+  fxRateToUsd        Float?
+  fxRateDate         DateTime?
+  financialYear      String?
+  transactionType    String?
+  stakeOffered       Float?
+  advisor            String?
+  advisorContactName String?
+  advisorContactEmail String?
+  advisorContactPhone String?
+  operatingLocations String[]           @default([])
+  companyHighlights  String[]           @default([])
+  processStage       String             @default("new")
+  reviewStatus       String             @default("review_required")
+  confidence         Float?
+  tags               String[]           @default([])
+  latestDocumentAt   DateTime            @default(now())
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  documents          TeaserDocument[]
+  reviewItems        TeaserReviewItem[]
+
+  @@index([industry])
+  @@index([country])
+  @@index([reviewStatus])
+  @@index([latestDocumentAt])
+}
+
+model TeaserDocument {
+  id                 String             @id @default(uuid())
+  opportunityId      String?
+  fingerprint        String             @unique
+  fileName           String
+  mimeType           String
+  fileSize           Int
+  storageProvider    String
+  storageKey         String
+  storageUrl         String?
+  sourceType         String
+  sourceLabel        String?
+  originalUrl        String?
+  status             String             @default("queued")
+  versionLabel       String?
+  documentType       String?
+  documentDate       DateTime?
+  language           String?
+  pageCount          Int?
+  uploadedBy         String             @default("Changyuan Ju")
+  uploadedAt         DateTime           @default(now())
+  processedAt        DateTime?
+  errorMessage       String?
+  extractedData      Json?
+  fieldEvidence      Json?
+  confidence         Float?
+  opportunity        TeaserOpportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  reviewItems        TeaserReviewItem[]
+
+  @@index([status])
+  @@index([sourceType])
+  @@index([uploadedAt])
+}
+
+model TeaserReviewItem {
+  id                 String             @id @default(uuid())
+  documentId         String
+  opportunityId      String?
+  type               String
+  fieldName          String?
+  message            String
+  status             String             @default("open")
+  payload            Json?
+  createdAt          DateTime           @default(now())
+  resolvedAt         DateTime?
+  resolvedBy         String?
+  document           TeaserDocument     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  opportunity        TeaserOpportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model TeaserSourceConnection {
+  id                 String   @id @default(uuid())
+  type               String
+  name               String
+  status             String   @default("not_configured")
+  localPath          String?
+  lastSyncAt         DateTime?
+  itemCount          Int      @default(0)
+  config             Json?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([type, name])
+}

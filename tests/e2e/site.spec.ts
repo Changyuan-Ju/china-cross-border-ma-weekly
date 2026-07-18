@@ -29,6 +29,18 @@ test("submit page keeps public lead submission simple", async ({ page }) => {
   await expect(page.getByRole("button", { name: "提交交易线索" })).toBeVisible();
 });
 
+test("teaser intelligence workspace is protected and opens after login", async ({ page }) => {
+  test.skip(!process.env.TEASER_ADMIN_PASSWORD, "TEASER_ADMIN_PASSWORD is required for authenticated Teaser E2E");
+  await page.goto("/teasers");
+  await expect(page.getByRole("heading", { name: "进入项目资料智库" })).toBeVisible();
+  await expect(page.getByLabel("账号")).toHaveValue("HTLH-IIB-Admin");
+  await page.getByRole("textbox", { name: "密码", exact: true }).fill(process.env.TEASER_ADMIN_PASSWORD!);
+  await page.getByRole("button", { name: "进入资料智库" }).click();
+  await expect(page.getByRole("heading", { name: "Teaser 项目资料智库" })).toBeVisible();
+  await page.getByRole("button", { name: "数据洞察" }).click();
+  await expect(page.getByRole("heading", { name: "组合数据洞察" })).toBeVisible();
+});
+
 test("weekly page shows candidate section and suggestion popover", async ({ page }) => {
   await page.goto("/weekly/2026-06-26-to-2026-07-03");
   await expect(page.getByRole("heading", { name: "本期其他候选交易" })).toBeVisible();
